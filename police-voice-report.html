@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MEA Field App — Voice Report Prototype</title>
+<style>
+  :root {
+    --navy: #0A1628;
+    --blue: #1442D9;
+    --baby-blue: #82CBF5;
+    --green: #22C55E;
+    --amber: #F59E0B;
+    --red: #EF4444;
+    --gray-50: #F8FAFC;
+    --gray-100: #F1F5F9;
+    --gray-200: #E2E8F0;
+    --gray-400: #94A3B8;
+    --gray-500: #64748B;
+    --gray-700: #334155;
+    --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+    --font-h: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    font-family: var(--font);
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 390px;
+    min-height: 844px;
+    background: #000;
+    border-radius: 50px;
+    padding: 12px;
+    box-shadow: 0 40px 100px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.1);
+    position: relative;
+  }
+
+  .phone-screen {
+    width: 100%;
+    height: 820px;
+    border-radius: 40px;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Status bar */
+  .status-bar {
+    background: var(--navy);
+    padding: 14px 24px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .status-time { font-size: 15px; font-weight: 700; color: #fff; }
+  .status-icons { display: flex; gap: 5px; align-items: center; }
+  .status-icons span { font-size: 12px; color: rgba(255,255,255,.8); }
+
+  /* Screens */
+  .screen { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+  .screen.active { display: flex; }
+
+  /* ── SCREEN 1: Home ── */
+  .home-header {
+    background: var(--navy);
+    padding: 16px 20px 20px;
+    flex-shrink: 0;
+  }
+  .officer-row {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+  }
+  .officer-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--blue); color: #fff;
+    font-size: 14px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .officer-name { font-size: 15px; font-weight: 700; color: #fff; }
+  .officer-sub { font-size: 11px; color: rgba(255,255,255,.55); margin-top: 1px; }
+  .shift-badge {
+    margin-left: auto;
+    background: rgba(34,197,94,.2);
+    border: 1px solid rgba(34,197,94,.4);
+    color: #4ADE80;
+    font-size: 10px; font-weight: 700;
+    padding: 4px 8px; border-radius: 6px;
+  }
+  .home-stats {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+  }
+  .home-stat {
+    background: rgba(255,255,255,.08);
+    border-radius: 10px; padding: 10px 12px; text-align: center;
+  }
+  .home-stat-val { font-size: 20px; font-weight: 800; color: #fff; }
+  .home-stat-label { font-size: 10px; color: rgba(255,255,255,.5); margin-top: 2px; }
+
+  .home-body { flex: 1; overflow-y: auto; background: var(--gray-50); padding: 16px; }
+
+  .new-citation-btn {
+    width: 100%; padding: 16px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--blue), #0E2FA8);
+    border: none; color: #fff; font-size: 15px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+    box-shadow: 0 4px 20px rgba(20,66,217,.4);
+    margin-bottom: 16px;
+    font-family: var(--font);
+  }
+  .new-citation-btn .mic-icon {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  .section-label {
+    font-size: 11px; font-weight: 700; color: var(--gray-400);
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 10px;
+  }
+
+  .recent-card {
+    background: #fff; border-radius: 12px;
+    border: 1px solid var(--gray-200);
+    padding: 12px 14px; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+  }
+  .recent-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--gray-100); color: var(--gray-500);
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .recent-name { font-size: 13.5px; font-weight: 700; color: var(--navy); }
+  .recent-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+  .recent-badge {
+    margin-left: auto; font-size: 10.5px; font-weight: 700;
+    padding: 3px 8px; border-radius: 6px; flex-shrink: 0;
+  }
+  .rb-sent { background: #DCFCE7; color: #15803D; }
+  .rb-pending { background: #FEF9C3; color: #854D0E; }
+
+  /* ── SCREEN 2: Voice capture ── */
+  .voice-header {
+    background: var(--navy); padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+  }
+  .back-btn {
+    background: rgba(255,255,255,.1); border: none; color: #fff;
+    width: 32px; height: 32px; border-radius: 10px;
+    cursor: pointer; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .voice-header-title { font-size: 16px; font-weight: 700; color: #fff; flex: 1; }
+  .voice-header-sub { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 1px; }
+
+  .voice-body {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; padding: 24px 20px; overflow-y: auto;
+    background: #fff;
+  }
+
+  .voice-prompt {
+    background: var(--gray-50); border: 1px solid var(--gray-200);
+    border-radius: 12px; padding: 14px 16px;
+    font-size: 12.5px; color: var(--gray-500); line-height: 1.6;
+    margin-bottom: 24px; width: 100%;
+  }
+  .voice-prompt strong { color: var(--navy); }
+
+  /* Waveform container */
+  .waveform-area {
+    width: 100%; background: var(--navy);
+    border-radius: 16px; padding: 20px 16px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 16px; margin-bottom: 24px;
+  }
+  .waveform-label { font-size: 11px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .06em; }
+  .waveform { display: flex; align-items: center; gap: 3px; height: 48px; }
+  .waveform-bar {
+    width: 4px; border-radius: 2px;
+    background: var(--baby-blue);
+    transition: height .08s ease;
+  }
+  .transcript-live {
+    font-size: 13px; color: rgba(255,255,255,.7);
+    text-align: center; line-height: 1.6; min-height: 44px;
+    padding: 0 8px;
+  }
+  .transcript-live em { color: rgba(255,255,255,.35); font-style: normal; }
+
+  /* Record button */
+  .record-btn-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    margin-bottom: 24px;
+  }
+  .record-btn {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 0 0 0 rgba(239,68,68,.4);
+    transition: all .2s;
+    position: relative;
+  }
+  .record-btn.recording {
+    animation: pulse-ring 1.2s ease-out infinite;
+    background: linear-gradient(135deg, #DC2626, #991B1B);
+  }
+  .record-btn.done {
+    background: linear-gradient(135deg, #16A34A, #15803D);
+    animation: none;
+  }
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(239,68,68,.5); }
+    70%  { box-shadow: 0 0 0 18px rgba(239,68,68,0); }
+    100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+  }
+  .record-label { font-size: 13px; font-weight: 600; color: var(--gray-500); }
+
+  .example-phrases {
+    width: 100%;
+    border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden;
+  }
+  .phrase-header {
+    background: var(--gray-100); padding: 10px 14px;
+    font-size: 11px; font-weight: 700; color: var(--gray-500);
+    text-transform: uppercase; letter-spacing: .05em;
+  }
+  .phrase-row {
+    padding: 10px 14px; font-size: 12px; color: var(--gray-700);
+    border-top: 1px solid var(--gray-100); line-height: 1.5;
+    cursor: pointer;
+    transition: background .1s;
+  }
+  .phrase-row:hover { background: var(--gray-50); }
+  .phrase-row strong { color: var(--blue); }
+
+  /* ── SCREEN 3: Processing ── */
+  .processing-body {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 32px 24px; background: #fff;
+  }
+  .processing-icon {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), #0E2FA8);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; margin-bottom: 20px;
+    animation: spin-glow 2s linear infinite;
+  }
+  @keyframes spin-glow {
+    0%   { box-shadow: 0 0 0 0 rgba(20,66,217,.4); }
+    50%  { box-shadow: 0 0 24px 4px rgba(20,66,217,.2); }
+    100% { box-shadow: 0 0 0 0 rgba(20,66,217,.4); }
+  }
+  .processing-title { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 8px; text-align: center; }
+  .processing-sub { font-size: 13px; color: var(--gray-400); text-align: center; line-height: 1.6; margin-bottom: 32px; }
+  .processing-steps { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .proc-step {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 10px;
+    border: 1px solid var(--gray-200);
+    font-size: 13px; color: var(--gray-700); font-weight: 500;
+  }
+  .proc-step.done   { background: #F0FDF4; border-color: #BBF7D0; color: #15803D; }
+  .proc-step.active { background: #EFF6FF; border-color: #BFDBFE; color: var(--blue); }
+  .proc-step-icon { font-size: 16px; flex-shrink: 0; }
+
+  /* ── SCREEN 4: Review form ── */
+  .review-header {
+    background: linear-gradient(135deg, #065F46, #059669);
+    padding: 16px 20px; flex-shrink: 0;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .review-header-title { font-size: 15px; font-weight: 700; color: #fff; }
+  .review-header-sub { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 1px; }
+  .ai-badge {
+    margin-left: auto; background: rgba(255,255,255,.15);
+    color: #fff; font-size: 10px; font-weight: 700;
+    padding: 4px 8px; border-radius: 6px;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .review-body { flex: 1; overflow-y: auto; background: var(--gray-50); padding: 14px 16px; }
+
+  .review-alert {
+    background: #F0FDF4; border: 1px solid #BBF7D0;
+    border-radius: 10px; padding: 11px 14px; margin-bottom: 14px;
+    font-size: 12px; color: #15803D; line-height: 1.5;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+
+  .form-section { margin-bottom: 16px; }
+  .form-section-label {
+    font-size: 10.5px; font-weight: 700; color: var(--gray-400);
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 8px; padding-left: 2px;
+  }
+  .form-card {
+    background: #fff; border: 1px solid var(--gray-200);
+    border-radius: 12px; overflow: hidden;
+  }
+  .form-field {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .form-field:last-child { border-bottom: none; }
+  .field-label { font-size: 10.5px; color: var(--gray-400); font-weight: 600; width: 88px; flex-shrink: 0; margin-top: 2px; }
+  .field-value { font-size: 13px; color: var(--navy); font-weight: 600; flex: 1; line-height: 1.4; }
+  .field-value.ai-filled { color: var(--blue); }
+  .field-value.editable {
+    border-bottom: 1.5px solid var(--gray-200);
+    outline: none; cursor: text; padding-bottom: 1px;
+  }
+  .field-value.editable:focus { border-color: var(--blue); color: var(--navy); }
+  .field-edit-icon { font-size: 12px; color: var(--gray-400); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+
+  .ai-source-note {
+    font-size: 10px; color: var(--blue); margin-top: 3px;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .elig-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 99px;
+    margin-top: 6px;
+  }
+  .elig-yes { background: #DCFCE7; color: #15803D; }
+  .elig-no  { background: #FEE2E2; color: #DC2626; }
+
+  .flag-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-bottom: 1px solid var(--gray-100);
+    font-size: 12.5px;
+  }
+  .flag-row:last-child { border-bottom: none; }
+  .flag-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .flag-clear { background: var(--green); }
+  .flag-warn  { background: var(--amber); }
+
+  .review-footer {
+    background: #fff; border-top: 1px solid var(--gray-200);
+    padding: 14px 16px; flex-shrink: 0; display: flex; gap: 10px;
+  }
+  .btn-submit {
+    flex: 1; padding: 14px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--blue), #0E2FA8);
+    border: none; color: #fff; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: var(--font);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-discard {
+    padding: 14px 16px; border-radius: 12px;
+    background: #fff; border: 1.5px solid var(--gray-200);
+    color: var(--gray-500); font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: var(--font);
+  }
+
+  /* ── SCREEN 5: Confirmed ── */
+  .confirm-body {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 32px 24px; background: #fff;
+    text-align: center;
+  }
+  .confirm-checkmark {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, #16A34A, #15803D);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; margin-bottom: 20px;
+    box-shadow: 0 8px 24px rgba(22,163,74,.3);
+  }
+  .confirm-title { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+  .confirm-sub { font-size: 13px; color: var(--gray-500); line-height: 1.6; margin-bottom: 28px; }
+  .confirm-details {
+    width: 100%; background: var(--gray-50);
+    border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden;
+    margin-bottom: 24px; text-align: left;
+  }
+  .confirm-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 11px 16px; border-bottom: 1px solid var(--gray-100);
+    font-size: 12.5px;
+  }
+  .confirm-row:last-child { border-bottom: none; }
+  .confirm-key { color: var(--gray-400); font-weight: 600; }
+  .confirm-val { color: var(--navy); font-weight: 700; }
+  .confirm-val.green { color: #16A34A; }
+  .btn-new-citation {
+    width: 100%; padding: 15px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--blue), #0E2FA8);
+    border: none; color: #fff; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: var(--font);
+  }
+
+  /* Bottom nav */
+  .bottom-nav {
+    background: #fff; border-top: 1px solid var(--gray-200);
+    padding: 8px 0 4px;
+    display: flex; flex-shrink: 0;
+  }
+  .nav-tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    gap: 3px; padding: 4px 0; cursor: pointer;
+    font-size: 10px; color: var(--gray-400); font-weight: 600;
+    border: none; background: none; font-family: var(--font);
+  }
+  .nav-tab.active { color: var(--blue); }
+  .nav-tab-icon { font-size: 20px; }
+
+  /* Sidebar label (desktop context) */
+  .desktop-label {
+    position: fixed; top: 40px; left: 50%;
+    transform: translateX(calc(-195px - 200px));
+    color: rgba(255,255,255,.5); font-size: 12px; font-family: var(--font);
+    text-align: right; width: 180px; line-height: 1.6;
+  }
+  .desktop-label strong { color: rgba(255,255,255,.8); display: block; font-size: 14px; margin-bottom: 4px; }
+
+  @media (max-width: 600px) {
+    body { padding: 0; align-items: flex-start; }
+    .phone { width: 100%; border-radius: 0; padding: 0; min-height: 100vh; }
+    .phone-screen { border-radius: 0; height: 100vh; }
+    .desktop-label { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="desktop-label">
+  <strong>MEA Field App</strong>
+  Police Officer — Voice Report<br>Prototype v1 · Mar 2026<br><br>
+  <span style="color:rgba(255,255,255,.35);font-size:11px">Click through the flow →</span>
+</div>
+
+<div class="phone">
+  <div class="phone-screen">
+
+    <!-- Status bar (shared) -->
+    <div class="status-bar" id="status-bar">
+      <span class="status-time">9:41 AM</span>
+      <div class="status-icons">
+        <span>●●●●</span>
+        <span>WiFi</span>
+        <span>🔋</span>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 1: Home ══ -->
+    <div class="screen active" id="screen-home">
+      <div class="home-header">
+        <div class="officer-row">
+          <div class="officer-avatar">JR</div>
+          <div>
+            <div class="officer-name">Off. James Rivera</div>
+            <div class="officer-sub">Badge #4471 · BPD District A-1 · Tour 2</div>
+          </div>
+          <div class="shift-badge">● ON DUTY</div>
+        </div>
+        <div class="home-stats">
+          <div class="home-stat">
+            <div class="home-stat-val">3</div>
+            <div class="home-stat-label">Citations Today</div>
+          </div>
+          <div class="home-stat">
+            <div class="home-stat-val">2</div>
+            <div class="home-stat-label">Diverted</div>
+          </div>
+          <div class="home-stat">
+            <div class="home-stat-val">67%</div>
+            <div class="home-stat-label">Diversion Rate</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-body">
+        <button class="new-citation-btn" onclick="goTo('screen-voice')">
+          <div class="mic-icon">🎙</div>
+          New Citation — Voice Report
+        </button>
+
+        <div class="section-label">Recent Citations</div>
+
+        <div class="recent-card">
+          <div class="recent-avatar">DA</div>
+          <div>
+            <div class="recent-name">Dominique Alvarez</div>
+            <div class="recent-sub">Unlicensed Operation · 9:12 AM · Blue Hill Ave</div>
+          </div>
+          <div class="recent-badge rb-sent">Sent to DA</div>
+        </div>
+
+        <div class="recent-card">
+          <div class="recent-avatar">TM</div>
+          <div>
+            <div class="recent-name">Tyrese Morgan</div>
+            <div class="recent-sub">Simple Possession · 8:44 AM · Dudley Sq</div>
+          </div>
+          <div class="recent-badge rb-sent">Sent to DA</div>
+        </div>
+
+        <div class="recent-card">
+          <div class="recent-avatar">AW</div>
+          <div>
+            <div class="recent-name">Amanda Wright</div>
+            <div class="recent-sub">Shoplifting &lt;$250 · Yesterday</div>
+          </div>
+          <div class="recent-badge rb-pending">Processing</div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button class="nav-tab active"><span class="nav-tab-icon">🏠</span>Home</button>
+        <button class="nav-tab"><span class="nav-tab-icon">📋</span>Citations</button>
+        <button class="nav-tab"><span class="nav-tab-icon">📊</span>Stats</button>
+        <button class="nav-tab"><span class="nav-tab-icon">⚙️</span>Settings</button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 2: Voice Capture ══ -->
+    <div class="screen" id="screen-voice">
+      <div class="voice-header">
+        <button class="back-btn" onclick="goTo('screen-home')">‹</button>
+        <div>
+          <div class="voice-header-title">Voice Report</div>
+          <div class="voice-header-sub">Speak the incident details — AI will structure the form</div>
+        </div>
+      </div>
+
+      <div class="voice-body">
+        <div class="voice-prompt">
+          <strong>What to include:</strong> Subject's name and ID if available · Charge type · Location · Any relevant context · Your badge number is auto-filled.
+        </div>
+
+        <div class="waveform-area" id="waveform-area" style="display:none">
+          <div class="waveform-label" id="waveform-label">Listening…</div>
+          <div class="waveform" id="waveform">
+            <!-- bars generated by JS -->
+          </div>
+          <div class="transcript-live" id="transcript-live">
+            <em>Start speaking…</em>
+          </div>
+        </div>
+
+        <div class="record-btn-wrap">
+          <button class="record-btn" id="record-btn" onclick="toggleRecord()">🎙</button>
+          <div class="record-label" id="record-label">Tap to record</div>
+        </div>
+
+        <div class="example-phrases">
+          <div class="phrase-header">Example phrases — tap to use</div>
+          <div class="phrase-row" onclick="useSample('drug')">
+            <strong>"Stop at Dudley Square, 10:15 AM."</strong> Subject is Marcus Williams, showed Mass ID, DOB March 5 2004. Found in possession of small quantity marijuana, personal use. Cooperative. No priors on file. Charge simple possession under 94C section 34.
+          </div>
+          <div class="phrase-row" onclick="useSample('shoplifting')">
+            <strong>"CVS on Tremont Street."</strong> Subject is Lena Guerrero, age 20. Concealed merchandise, total value around forty dollars. First offense. Shoplifting under 266 section 30A.
+          </div>
+          <div class="phrase-row" onclick="useSample('trespass')">
+            <strong>"Subject found on MBTA property"</strong> after closing hours. Devon Lewis, DOB July 11 2001. No priors. Criminal trespass, 266 section 120.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 3: AI Processing ══ -->
+    <div class="screen" id="screen-processing">
+      <div class="voice-header">
+        <div>
+          <div class="voice-header-title">Structuring Report…</div>
+          <div class="voice-header-sub">MEA AI is extracting citation fields</div>
+        </div>
+      </div>
+      <div class="processing-body">
+        <div class="processing-icon">🤖</div>
+        <div class="processing-title">AI Processing Voice Input</div>
+        <div class="processing-sub">Extracting and structuring citation fields from your voice report</div>
+        <div class="processing-steps" id="proc-steps">
+          <div class="proc-step done" id="ps1"><span class="proc-step-icon">✓</span> Transcribing audio</div>
+          <div class="proc-step active" id="ps2"><span class="proc-step-icon">⟳</span> Identifying subject & charge</div>
+          <div class="proc-step" id="ps3"><span class="proc-step-icon">○</span> Checking eligibility rules</div>
+          <div class="proc-step" id="ps4"><span class="proc-step-icon">○</span> Syncing criminal history</div>
+          <div class="proc-step" id="ps5"><span class="proc-step-icon">○</span> Preparing citation form</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 4: Review Form ══ -->
+    <div class="screen" id="screen-review">
+      <div class="review-header">
+        <div>
+          <div class="review-header-title">Review & Confirm Citation</div>
+          <div class="review-header-sub">AI-structured from your voice — edit any field before submitting</div>
+        </div>
+        <div class="ai-badge">🤖 AI Draft</div>
+      </div>
+      <div class="review-body">
+
+        <div class="review-alert">
+          <span>✓</span>
+          All fields extracted from voice. Blue values were AI-inferred — tap any field to edit before submitting.
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-label">Subject</div>
+          <div class="form-card">
+            <div class="form-field">
+              <div class="field-label">Full Name</div>
+              <div>
+                <div class="field-value ai-filled" contenteditable="true" spellcheck="false">Marcus Williams</div>
+                <div class="ai-source-note">🎙 From voice</div>
+              </div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">DOB</div>
+              <div>
+                <div class="field-value ai-filled" contenteditable="true" spellcheck="false">03/05/2004</div>
+                <div class="ai-source-note">🎙 From voice</div>
+              </div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">Age</div>
+              <div class="field-value">22 <span style="font-size:11px;color:var(--gray-400)">(calculated)</span></div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">ID Verified</div>
+              <div>
+                <div class="field-value ai-filled">✓ MA Driver's License</div>
+                <div class="ai-source-note">🎙 From voice</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-label">Charge</div>
+          <div class="form-card">
+            <div class="form-field">
+              <div class="field-label">Charge</div>
+              <div>
+                <div class="field-value ai-filled">Simple Drug Possession</div>
+                <div class="ai-source-note">🎙 From voice — M.G.L. c.94C § 34</div>
+              </div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">Statute</div>
+              <div class="field-value">M.G.L. c.94C § 34</div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">Diversion</div>
+              <div>
+                <div class="elig-pill elig-yes">✓ SWIFT Eligible — EAP candidate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-label">Location & Time</div>
+          <div class="form-card">
+            <div class="form-field">
+              <div class="field-label">Location</div>
+              <div>
+                <div class="field-value ai-filled" contenteditable="true" spellcheck="false">Dudley Square, Roxbury, Boston</div>
+                <div class="ai-source-note">🎙 From voice</div>
+              </div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">Time</div>
+              <div class="field-value ai-filled">10:15 AM</div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">Date</div>
+              <div class="field-value">March 5, 2026 <span style="font-size:11px;color:var(--gray-400)">(today)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-label">Background Checks</div>
+          <div class="form-card">
+            <div class="flag-row">
+              <div class="flag-dot flag-clear"></div>
+              <div style="font-size:12.5px;color:var(--gray-700)">No prior arrests on record</div>
+            </div>
+            <div class="flag-row">
+              <div class="flag-dot flag-clear"></div>
+              <div style="font-size:12.5px;color:var(--gray-700)">No active warrants</div>
+            </div>
+            <div class="flag-row">
+              <div class="flag-dot flag-clear"></div>
+              <div style="font-size:12.5px;color:var(--gray-700)">No restraining orders on file</div>
+            </div>
+            <div class="flag-row">
+              <div class="flag-dot flag-clear"></div>
+              <div style="font-size:12.5px;color:var(--gray-700)">No gang unit flags</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-label">Reporting Officer</div>
+          <div class="form-card">
+            <div class="form-field">
+              <div class="field-label">Officer</div>
+              <div class="field-value">Off. James Rivera</div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">Badge</div>
+              <div class="field-value">#4471 · BPD District A-1</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="review-footer">
+        <button class="btn-discard" onclick="goTo('screen-home')">Discard</button>
+        <button class="btn-submit" onclick="submitCitation()">
+          <span>Submit Citation →</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 5: Confirmed ══ -->
+    <div class="screen" id="screen-confirm">
+      <div class="voice-header" style="background: linear-gradient(135deg,#065F46,#059669)">
+        <div>
+          <div class="voice-header-title">Citation Submitted</div>
+          <div class="voice-header-sub">Synced to DA SWIFT queue</div>
+        </div>
+      </div>
+      <div class="confirm-body">
+        <div class="confirm-checkmark">✓</div>
+        <div class="confirm-title">Report Submitted</div>
+        <div class="confirm-sub">Citation sent to SCDA SWIFT queue. ADA review within 2 hours. Subject will receive SMS if diversion is approved.</div>
+        <div class="confirm-details">
+          <div class="confirm-row">
+            <span class="confirm-key">Citation #</span>
+            <span class="confirm-val" style="font-family:monospace">MEA-2026-0914</span>
+          </div>
+          <div class="confirm-row">
+            <span class="confirm-key">Subject</span>
+            <span class="confirm-val">Marcus Williams</span>
+          </div>
+          <div class="confirm-row">
+            <span class="confirm-key">Charge</span>
+            <span class="confirm-val">Simple Drug Possession</span>
+          </div>
+          <div class="confirm-row">
+            <span class="confirm-key">Diversion</span>
+            <span class="confirm-val green">✓ SWIFT Eligible</span>
+          </div>
+          <div class="confirm-row">
+            <span class="confirm-key">Time Saved</span>
+            <span class="confirm-val green">~45 min vs manual</span>
+          </div>
+          <div class="confirm-row">
+            <span class="confirm-key">Sent to</span>
+            <span class="confirm-val">SCDA SWIFT Queue · Dep. DA Blazo</span>
+          </div>
+        </div>
+        <button class="btn-new-citation" onclick="goTo('screen-home')">+ New Citation</button>
+      </div>
+    </div>
+
+  </div><!-- /phone-screen -->
+</div><!-- /phone -->
+
+<script>
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  // Status bar color
+  const darkScreens = ['screen-home', 'screen-voice', 'screen-processing'];
+  document.getElementById('status-bar').style.background =
+    screenId === 'screen-review' ? 'linear-gradient(135deg,#065F46,#059669)' :
+    screenId === 'screen-confirm' ? 'linear-gradient(135deg,#065F46,#059669)' :
+    'var(--navy)';
+}
+
+// ── Waveform animation ──
+let waveInterval = null;
+let recordingState = 'idle'; // idle | recording | done
+let transcriptInterval = null;
+
+const TRANSCRIPT_DRUG = [
+  "Stop at Dudley Square…",
+  "Stop at Dudley Square, 10:15 AM…",
+  "Subject is Marcus Williams…",
+  "Subject is Marcus Williams, showed Mass ID…",
+  "DOB March 5, 2004…",
+  "Found in possession of small quantity marijuana…",
+  "Personal use. Cooperative. No priors on file.",
+  "Charge simple possession, 94C section 34. ✓",
+];
+
+let transcriptStep = 0;
+
+function buildWaveform() {
+  const wf = document.getElementById('waveform');
+  wf.innerHTML = '';
+  for (let i = 0; i < 28; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'waveform-bar';
+    bar.style.height = '4px';
+    wf.appendChild(bar);
+  }
+}
+
+function animateWaveform() {
+  const bars = document.querySelectorAll('.waveform-bar');
+  bars.forEach(bar => {
+    const h = Math.random() * 40 + 4;
+    bar.style.height = h + 'px';
+    bar.style.opacity = 0.4 + (h / 44) * 0.6;
+  });
+}
+
+function toggleRecord() {
+  if (recordingState === 'idle') {
+    startRecording();
+  } else if (recordingState === 'recording') {
+    stopRecording();
+  }
+}
+
+function startRecording() {
+  recordingState = 'recording';
+  const btn = document.getElementById('record-btn');
+  btn.classList.add('recording');
+  btn.textContent = '■';
+  document.getElementById('record-label').textContent = 'Tap to stop';
+  document.getElementById('waveform-area').style.display = 'flex';
+  buildWaveform();
+  waveInterval = setInterval(animateWaveform, 80);
+  transcriptStep = 0;
+  transcriptInterval = setInterval(() => {
+    const el = document.getElementById('transcript-live');
+    if (transcriptStep < TRANSCRIPT_DRUG.length) {
+      el.innerHTML = TRANSCRIPT_DRUG[transcriptStep];
+      transcriptStep++;
+    }
+  }, 900);
+}
+
+function stopRecording() {
+  recordingState = 'done';
+  clearInterval(waveInterval);
+  clearInterval(transcriptInterval);
+  const btn = document.getElementById('record-btn');
+  btn.classList.remove('recording');
+  btn.classList.add('done');
+  btn.textContent = '✓';
+  document.getElementById('record-label').textContent = 'Done — processing…';
+  document.getElementById('waveform-label').textContent = 'Complete';
+  // Freeze bars
+  document.querySelectorAll('.waveform-bar').forEach(b => { b.style.height = '4px'; });
+  setTimeout(() => startProcessing(), 600);
+}
+
+function useSample(type) {
+  if (recordingState === 'idle') {
+    document.getElementById('waveform-area').style.display = 'flex';
+    buildWaveform();
+    const btn = document.getElementById('record-btn');
+    btn.classList.add('recording');
+    btn.textContent = '■';
+    document.getElementById('record-label').textContent = 'Tap to stop';
+    recordingState = 'recording';
+    waveInterval = setInterval(animateWaveform, 80);
+    transcriptStep = 0;
+    transcriptInterval = setInterval(() => {
+      const el = document.getElementById('transcript-live');
+      if (transcriptStep < TRANSCRIPT_DRUG.length) {
+        el.innerHTML = TRANSCRIPT_DRUG[transcriptStep];
+        transcriptStep++;
+      } else {
+        stopRecording();
+      }
+    }, 700);
+  }
+}
+
+// ── Processing screen steps ──
+function startProcessing() {
+  goTo('screen-processing');
+  const steps = ['ps2','ps3','ps4','ps5'];
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i < steps.length) {
+      const prev = document.getElementById(i === 0 ? 'ps1' : steps[i-1]);
+      if (prev) { prev.classList.remove('active'); prev.classList.add('done'); prev.querySelector('.proc-step-icon').textContent = '✓'; }
+      const cur = document.getElementById(steps[i]);
+      if (cur) { cur.classList.add('active'); cur.querySelector('.proc-step-icon').textContent = '⟳'; }
+      i++;
+    } else {
+      // last step done
+      const last = document.getElementById(steps[steps.length-1]);
+      if (last) { last.classList.remove('active'); last.classList.add('done'); last.querySelector('.proc-step-icon').textContent = '✓'; }
+      clearInterval(iv);
+      setTimeout(() => goTo('screen-review'), 500);
+    }
+  }, 700);
+}
+
+function submitCitation() {
+  goTo('screen-confirm');
+  // reset for next use
+  recordingState = 'idle';
+  const btn = document.getElementById('record-btn');
+  btn.classList.remove('recording','done');
+  btn.textContent = '🎙';
+  document.getElementById('record-label').textContent = 'Tap to record';
+  document.getElementById('waveform-area').style.display = 'none';
+  document.getElementById('transcript-live').innerHTML = '<em>Start speaking…</em>';
+}
+</script>
+</body>
+</html>
