@@ -426,9 +426,11 @@ html, body { height: 100%; background: #EEF5FF; color: #0A1628; font-family: var
 }
 .modal-overlay.open { display: flex; }
 .modal {
-  background: #fff; border-radius: 16px; width: 480px; max-width: 90vw;
+  background: #fff; border-radius: 16px; width: 480px; max-width: 90vw; max-height: 90vh;
   box-shadow: 0 24px 60px rgba(0,0,0,.18); overflow: hidden; animation: modal-in .2s ease;
+  display: flex; flex-direction: column;
 }
+.modal-body { overflow-y: auto; flex: 1; min-height: 0; }
 @keyframes modal-in { from { opacity:0; transform:scale(.95) } to { opacity:1; transform:scale(1) } }
 .modal-header { padding: 22px 24px; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; }
 .modal-title { font-family: var(--font-h); font-weight: 700; font-size: 16px; }
@@ -899,7 +901,7 @@ select.form-control { cursor: pointer; }
     <header class="topbar">
       <div>
         <div class="topbar-title" id="topbar-title">Dashboard</div>
-        <div class="topbar-subtitle" id="topbar-sub">Tuesday, March 3, 2026 · SCDA — SCDA</div>
+        <div class="topbar-subtitle" id="topbar-sub">Monday, March 10, 2026 · SCDA — SCDA</div>
       </div>
       <div class="topbar-right">
         <div style="margin-right:8px;opacity:1">
@@ -923,22 +925,22 @@ select.form-control { cursor: pointer; }
       <!-- ════════════════ SCREEN: HOME ════════════════ -->
       <div class="screen active" id="screen-home">
         <div class="stats-row">
-          <div class="stat-card">
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('pending')">
             <div class="stat-label">Pending Review</div>
             <div class="stat-value blue">17</div>
             <div class="stat-sub">Awaiting your decision</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('approved')">
             <div class="stat-label">Approved Today</div>
             <div class="stat-value green">12</div>
             <div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 3</span> vs yesterday</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('avgtime')">
             <div class="stat-label">Avg Review Time</div>
             <div class="stat-value">4.2<span style="font-size:18px;font-weight:400">m</span></div>
             <div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 18%</span> faster this week</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('missed')">
             <div class="stat-label">Missed Deadlines</div>
             <div class="stat-value red">1</div>
             <div class="stat-sub">72hr window exceeded</div>
@@ -3248,7 +3250,7 @@ select.form-control { cursor: pointer; }
         <!-- MEA footer -->
         <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:32px 0 8px;opacity:.35;border-top:1px solid var(--gray-200);margin-top:8px">
           <div class="mea-wordmark sm"><span class="mea-me">ME</span><span class="mea-a">A</span></div>
-          <span style="font-size:12px;color:var(--gray-500)">Diversion Intelligence Platform · Suffolk County DA</span>
+          <span style="font-size:12px;color:var(--gray-500)">DA Diversion Platform · Suffolk County DA</span>
         </div>
 
       </div><!-- /screen-reports -->
@@ -3541,6 +3543,17 @@ select.form-control { cursor: pointer; }
       </div>
 
     </div>
+  </div>
+</div>
+
+<!-- Stat Card Popup Modal -->
+<div id="stat-popup" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);align-items:center;justify-content:center;" onclick="if(event.target===this)closeStatPopup()">
+  <div style="background:#fff;border-radius:16px;width:560px;max-height:80vh;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.25);animation:modalIn .2s ease;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #e5e7eb;">
+      <h3 id="stat-popup-title" style="font-size:17px;font-weight:700;color:#111827;margin:0;"></h3>
+      <button onclick="closeStatPopup()" style="width:32px;height:32px;border-radius:50%;border:none;background:#f3f4f6;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#6b7280;">✕</button>
+    </div>
+    <div id="stat-popup-body" style="padding:16px 24px 24px;overflow-y:auto;max-height:60vh;"></div>
   </div>
 </div>
 
@@ -5035,7 +5048,123 @@ function goBack() {
 function filterChip(el) {
   el.closest('.filter-row').querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
+  const label = el.textContent.trim().replace(/[⚑\s]*(.+?)\s*\(\d+\)/, '$1').trim();
+  const table = document.querySelector('#screen-queue .queue-table tbody');
+  if (!table) return;
+  const rows = table.querySelectorAll('tr');
+  rows.forEach(row => {
+    if (label === 'All') { row.style.display = ''; return; }
+    const badges = row.querySelectorAll('.badge, .badge-swift, .badge-gang');
+    const rowText = row.textContent;
+    let match = false;
+    if (label === 'Pending') match = rowText.includes('Pending');
+    else if (label === 'In Review') match = rowText.includes('In Review');
+    else if (label === 'SWIFT') match = row.querySelector('.badge-swift') !== null;
+    else if (label === 'Async') match = rowText.includes('Async');
+    else if (label === 'Gang Unit') match = row.classList.contains('gang-row') || rowText.includes('GANG UNIT');
+    row.style.display = match ? '' : 'none';
+  });
 }
+
+// ── STAT CARD POPUPS ──
+const statPopupData = {
+  pending: {
+    title: 'Pending Review — 17 Cases',
+    people: [
+      { initials:'JR', name:'James Rivera', charge:'Simple Possession', time:'6hr left', color:'#EDE9FE', text:'#7C3AED' },
+      { initials:'AK', name:'Amara Kofi', charge:'Shoplifting <$250', time:'31hr left', color:'#FEF9C3', text:'#A16207' },
+      { initials:'MS', name:'Maya Santos', charge:'Shoplifting <$100', time:'44hr left', color:'#DCFCE7', text:'#15803D' },
+      { initials:'TN', name:'Tariq Nasser', charge:'Simple Possession', time:'58hr left', color:'#EDE9FE', text:'#7C3AED' },
+      { initials:'DT', name:'Darius J. Tatum', charge:'Field Encounter', time:'New', color:'#FEE2E2', text:'#991B1B' },
+      { initials:'DP', name:'Dylan Park', charge:'Disorderly Conduct', time:'OVERDUE', color:'#FEE2E2', text:'#991B1B' },
+      { initials:'LM', name:'Lucas Mendes', charge:'Trespassing', time:'12hr left', color:'#DBEAFE', text:'#1D4ED8' },
+      { initials:'RJ', name:'Rachel James', charge:'Petty Theft', time:'8hr left', color:'#FCE7F3', text:'#9D174D' },
+      { initials:'KW', name:'Kevin Washington', charge:'Public Intox', time:'22hr left', color:'#FEF3C7', text:'#92400E' },
+      { initials:'AP', name:'Ana Perez', charge:'Shoplifting <$100', time:'36hr left', color:'#DCFCE7', text:'#15803D' },
+      { initials:'JB', name:'Jason Brooks', charge:'Vandalism', time:'48hr left', color:'#E0E7FF', text:'#3730A3' },
+      { initials:'SM', name:'Shanice Moore', charge:'Simple Possession', time:'15hr left', color:'#EDE9FE', text:'#7C3AED' },
+      { initials:'DH', name:'David Hernandez', charge:'Disorderly Conduct', time:'52hr left', color:'#FEE2E2', text:'#991B1B' },
+      { initials:'TL', name:'Tanya Lewis', charge:'Trespassing', time:'28hr left', color:'#DBEAFE', text:'#1D4ED8' },
+      { initials:'MC', name:'Marcus Chen', charge:'Shoplifting <$250', time:'40hr left', color:'#FEF9C3', text:'#A16207' },
+      { initials:'NR', name:'Nina Rodriguez', charge:'Simple Possession', time:'19hr left', color:'#EDE9FE', text:'#7C3AED' },
+      { initials:'BT', name:'Brian Thomas', charge:'Public Intox', time:'62hr left', color:'#FEF3C7', text:'#92400E' },
+    ]
+  },
+  approved: {
+    title: 'Approved Today — 12 Cases',
+    people: [
+      { initials:'CW', name:'Carlos Williams', charge:'Shoplifting <$100', time:'Approved 8:12 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'EM', name:'Elena Martinez', charge:'Simple Possession', time:'Approved 8:45 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'TP', name:'Tyler Price', charge:'Trespassing', time:'Approved 9:03 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'AD', name:'Aaliyah Davis', charge:'Petty Theft', time:'Approved 9:28 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'RK', name:'Ryan Kim', charge:'Disorderly Conduct', time:'Approved 9:55 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'JF', name:'Jordan Foster', charge:'Public Intox', time:'Approved 10:11 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'KA', name:'Keisha Adams', charge:'Simple Possession', time:'Approved 10:34 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'MO', name:'Miguel Ortiz', charge:'Shoplifting <$250', time:'Approved 10:58 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'SW', name:'Sarah Wright', charge:'Vandalism', time:'Approved 11:15 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'DB', name:'Derek Brown', charge:'Trespassing', time:'Approved 11:42 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'LP', name:'Lisa Park', charge:'Petty Theft', time:'Approved 12:05 PM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'JG', name:'James Garcia', charge:'Simple Possession', time:'Approved 12:30 PM', color:'#DCFCE7', text:'#15803D' },
+    ]
+  },
+  avgtime: {
+    title: 'Review Time Breakdown',
+    people: [
+      { initials:'⚡', name:'Under 2 minutes', charge:'4 cases', time:'Fastest', color:'#DCFCE7', text:'#15803D' },
+      { initials:'✓', name:'2–5 minutes', charge:'14 cases', time:'On target', color:'#DBEAFE', text:'#1D4ED8' },
+      { initials:'⚠', name:'5–10 minutes', charge:'6 cases', time:'Slightly slow', color:'#FEF3C7', text:'#92400E' },
+      { initials:'✗', name:'Over 10 minutes', charge:'2 cases', time:'Needs attention', color:'#FEE2E2', text:'#991B1B' },
+    ]
+  },
+  missed: {
+    title: 'Missed Deadlines — 1 Case',
+    people: [
+      { initials:'DP', name:'Dylan Park', charge:'Disorderly Conduct', time:'72hr window exceeded by 4hr', color:'#FEE2E2', text:'#991B1B' },
+    ]
+  }
+};
+
+function showStatPopup(type) {
+  const data = statPopupData[type];
+  if (!data) return;
+  document.getElementById('stat-popup-title').textContent = data.title;
+  const body = document.getElementById('stat-popup-body');
+  body.innerHTML = data.people.map(p => `
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+      <div style="width:38px;height:38px;border-radius:50%;background:${p.color};color:${p.text};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${p.initials}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:600;color:#111827;">${p.name}</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:1px;">${p.charge}</div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:${p.time.includes('OVERDUE')||p.time.includes('exceeded')?'#DC2626':p.time.includes('Approved')?'#059669':'#6b7280'};white-space:nowrap;">${p.time}</div>
+    </div>
+  `).join('');
+  const popup = document.getElementById('stat-popup');
+  popup.style.display = 'flex';
+}
+
+function closeStatPopup() {
+  document.getElementById('stat-popup').style.display = 'none';
+}
+
+// ── QUEUE SEARCH ──
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.querySelector('#screen-queue .search-box input');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const q = this.value.toLowerCase();
+      const table = document.querySelector('#screen-queue .queue-table tbody');
+      if (!table) return;
+      // Reset filter chips to "All"
+      document.querySelectorAll('#screen-queue .filter-chip').forEach(c => c.classList.remove('active'));
+      const allChip = document.querySelector('#screen-queue .filter-chip');
+      if (allChip) allChip.classList.add('active');
+      table.querySelectorAll('tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+  }
+});
 
 // ── PROGRAM SELECTION ──
 function selectProgram(el) {
