@@ -4720,7 +4720,7 @@ function openDefModal(d) {
   m.querySelector('#dm-statute').textContent = d.statute;
   m.querySelector('#dm-arrest-date').textContent = d.arrestDate;
   m.querySelector('#dm-officer').textContent = d.officer;
-  m.querySelector('#dm-priors-val').textContent = d.priors === 0 ? 'Clean' : d.priors + ' prior charge' + (d.priors === 1 ? '' : 's');
+  m.querySelector('#dm-priors-val').textContent = d.priors === 0 ? 'None' : d.priors + ' prior charge' + (d.priors === 1 ? '' : 's');
   m.querySelector('#dm-priors-val').style.color = d.priors === 0 ? 'var(--green)' : d.priors >= 10 ? '#dc2626' : 'var(--amber)';
   m.querySelector('#dm-priors-val').style.fontWeight = d.priors >= 10 ? '800' : '600';
   m.querySelector('#dm-priors-sub').textContent = d.priorsNote;
