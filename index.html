@@ -2737,7 +2737,7 @@ select.form-control { cursor: pointer; }
                 <div class="donut-chart">
                   <svg viewBox="0 0 180 180">
                     <!-- r=64, circumference=402.1 -->
-                    <!-- Drug 37.5% → 150.8, offset 0 -->
+                    <!-- Drug Possess Class B 37.5% → 150.8, offset 0 -->
                     <circle cx="90" cy="90" r="64" fill="none" stroke="#7C3AED" stroke-width="28"
                       stroke-dasharray="150.8 251.3" stroke-dashoffset="0"/>
                     <!-- Shoplifting 27.1% → 108.9, offset -150.8 -->
@@ -2746,10 +2746,10 @@ select.form-control { cursor: pointer; }
                     <!-- Disorderly 14.6% → 58.7, offset -259.7 -->
                     <circle cx="90" cy="90" r="64" fill="none" stroke="#16A34A" stroke-width="28"
                       stroke-dasharray="58.7 343.4" stroke-dashoffset="-259.7"/>
-                    <!-- Vandalism 8.3% → 33.4, offset -318.4 -->
+                    <!-- Vandalize Property 8.3% → 33.4, offset -318.4 -->
                     <circle cx="90" cy="90" r="64" fill="none" stroke="#DC2626" stroke-width="28"
                       stroke-dasharray="33.4 368.7" stroke-dashoffset="-318.4"/>
-                    <!-- Trespassing 8.3% → 33.4, offset -351.8 -->
+                    <!-- Trespass 8.3% → 33.4, offset -351.8 -->
                     <circle cx="90" cy="90" r="64" fill="none" stroke="#0891B2" stroke-width="28"
                       stroke-dasharray="33.4 368.7" stroke-dashoffset="-351.8"/>
                     <!-- Other 4.2% → 16.9, offset -385.2 -->
@@ -2765,12 +2765,12 @@ select.form-control { cursor: pointer; }
                 <div class="legend-list">
                   <div class="legend-item">
                     <div class="legend-dot" style="background:#7C3AED"></div>
-                    <div class="legend-label">Simple Drug Possession</div>
+                    <div class="legend-label">Drug, Possess Class B</div>
                     <div class="legend-val">18<span class="legend-pct">37.5%</span></div>
                   </div>
                   <div class="legend-item">
                     <div class="legend-dot" style="background:#D97706"></div>
-                    <div class="legend-label">Shoplifting / Petty Theft</div>
+                    <div class="legend-label">Shoplifting / Larceny</div>
                     <div class="legend-val">13<span class="legend-pct">27.1%</span></div>
                   </div>
                   <div class="legend-item">
@@ -2780,12 +2780,12 @@ select.form-control { cursor: pointer; }
                   </div>
                   <div class="legend-item">
                     <div class="legend-dot" style="background:#DC2626"></div>
-                    <div class="legend-label">Vandalism / Property</div>
+                    <div class="legend-label">Vandalize Property</div>
                     <div class="legend-val">4<span class="legend-pct">8.3%</span></div>
                   </div>
                   <div class="legend-item">
                     <div class="legend-dot" style="background:#0891B2"></div>
-                    <div class="legend-label">Criminal Trespassing</div>
+                    <div class="legend-label">Trespass</div>
                     <div class="legend-val">4<span class="legend-pct">8.3%</span></div>
                   </div>
                   <div class="legend-item">
@@ -3980,8 +3980,9 @@ const DEFENDANTS = {
   // ── Active Cases (additional) ──
   'KM-AC': {
     id:'KM-AC', initials:'KM', name:'Kyla Martin', age:20, dob:'04/12/2005',
-    court:'Chelsea District Court', charge:'Simple Drug Possession', statute:'M.G.L. c.94C § 34',
+    court:'Chelsea District Court', charge:'Drug, Possess Class B', statute:'M.G.L. c.94C §34',
     arrestDate:'Feb 15, 2026', officer:'Off. Nguyen · Chelsea PD',
+    entryType:'Field / Pre-Arrest',
     priors:0, priorsNote:'No prior arrests',
     incident:'Found in possession of 1.8g marijuana near Chelsea High School exit. Personal use quantity. Cooperative. Student ID confirmed.',
     window:'✓ Active', status:'Active', statusClass:'badge-approved',
@@ -4000,7 +4001,7 @@ const DEFENDANTS = {
   },
   'MS-AC': {
     id:'MS-AC', initials:'MS', name:'Marcus Shaw', age:23, dob:'09/05/2002',
-    court:'Boston Municipal Court — Central', charge:'Vandalism < $500', statute:'M.G.L. c.266 § 126A',
+    court:'Boston Municipal Court — Central', charge:'Vandalize Property', statute:'M.G.L. c.266 §126A',
     arrestDate:'Feb 10, 2026', officer:'Off. Murphy · BPD District C-11',
     priors:0, priorsNote:'No prior arrests',
     incident:'Spray-painted tag on MBTA Green Line utility box, Boylston St Boston. City remediation estimate $210. Spray cans recovered at scene. Caught by MBTA Transit Police.',
@@ -4021,7 +4022,7 @@ const DEFENDANTS = {
 
   'AS-H01': {
     id:'AS-H01', initials:'AS', name:'Amelia Singh', age:21, dob:'06/08/2004',
-    court:'Boston Municipal Court — Central', charge:'Simple Drug Possession', statute:'M.G.L. c.94C § 34',
+    court:'Boston Municipal Court — Central', charge:'Drug, Possess Class B', statute:'M.G.L. c.94C §34',
     arrestDate:'March 3, 2026', officer:'Off. Williams · BPD District D-4',
     priors:0, priorsNote:'No prior arrests',
     incident:'Found in possession of 0.9g marijuana at Back Bay Station, Boston. Personal use quantity. Produced student ID (Northeastern University). Cooperative throughout.',
@@ -4039,7 +4040,7 @@ const DEFENDANTS = {
   },
   'LC-H02': {
     id:'LC-H02', initials:'LC', name:'Lawrence Carry', age:23, dob:'11/15/2002',
-    court:'Boston Municipal Court — Central', charge:'Shoplifting < $250', statute:'M.G.L. c.266 § 30A',
+    court:'Boston Municipal Court — Central', charge:'Shoplifting by Asportation', statute:'M.G.L. c.266 §30A',
     arrestDate:'March 2, 2026', officer:'Off. Morris · BPD District A-1',
     priors:60, priorsNote:'60 prior charges — SWIFT ineligible (threshold: 3)',
     incident:'Concealed 2 items at CVS, Tremont St Boston. Items: cologne ($44), snacks ($12). Total: $56. Detected by LP at self-checkout. Items recovered intact. Cooperative with store staff.',
@@ -4058,8 +4059,9 @@ const DEFENDANTS = {
   // ── Home Screen Referral Queue — New Cases ──
   'RQ-001': {
     id:'RQ-001', initials:'DA', name:'Dominique Alvarez', age:25, dob:'07/22/2000',
-    court:'Boston Municipal Court — Central', charge:'Unlicensed Operation of MV', statute:'M.G.L. c.90 § 10',
+    court:'Boston Municipal Court — Central', charge:'Unlicensed Operation of MV', statute:'M.G.L. c.90 §10',
     arrestDate:'March 3, 2026', officer:'Off. Rivera · BPD District A-1',
+    entryType:'Summons',
     priors:0, priorsNote:'No prior arrests or dispositions',
     incident:'Stopped at a routine traffic check on Blue Hill Ave, Roxbury. Unable to produce a valid MA driver\'s license. Registry check confirmed no active license on file. Vehicle was properly insured and registered. Cooperative throughout stop.',
     window:'✓ 48hr left', status:'Pending', statusClass:'badge-pending',
@@ -4073,7 +4075,7 @@ const DEFENDANTS = {
   },
   'RQ-002': {
     id:'RQ-002', initials:'TM', name:'Tyrese Morgan', age:22, dob:'03/11/2003',
-    court:'Boston Municipal Court — Central', charge:'License Suspended, Op MV With', statute:'M.G.L. c.90 § 23',
+    court:'Boston Municipal Court — Central', charge:'License Suspended, Op MV With', statute:'M.G.L. c.90 §23',
     arrestDate:'March 3, 2026', officer:'Off. Perez · BPD District B-2',
     priors:1, priorsNote:'1 prior — same charge (2024), resolved CWOF',
     incident:'Pulled over on Washington St, Dorchester for failure to signal. Registry check revealed license suspended for unpaid fines (civil infraction, not criminal). Defendant stated he was unaware of suspension. Vehicle left with a licensed passenger.',
@@ -4088,23 +4090,25 @@ const DEFENDANTS = {
   },
   'RQ-003': {
     id:'RQ-003', initials:'SP', name:'Sofia Pereira', age:19, dob:'09/30/2005',
-    court:'Boston Municipal Court — Central', charge:'Assault & Battery', statute:'M.G.L. c.265 § 13A(a)',
+    court:'Boston Municipal Court — Central', charge:'Assault & Battery', statute:'M.G.L. c.265 §13A(a)',
     arrestDate:'March 3, 2026', officer:'Off. Santos · BPD District D-4',
+    dv56a:true,
     priors:0, priorsNote:'No prior arrests — first offense',
-    incident:'Verbal dispute outside a Fenway bar escalated to a push. Alleged victim (no injury) declined medical attention. Both parties had been drinking. Security footage reviewed — contact appeared brief and non-injurious. No weapon involved.',
-    window:'✓ 36hr left', status:'Pending', statusClass:'badge-pending',
-    program:'SWIFT Diversion', eligible:true,
+    incident:'Verbal dispute outside a Fenway bar escalated to a push against her boyfriend. 56A domestic violence form filed by responding officer. Alleged victim (no injury) declined medical attention. Both parties had been drinking. Security footage reviewed — contact appeared brief and non-injurious. No weapon involved.',
+    window:'✓ 36hr left', status:'Ineligible', statusClass:'badge-breach',
+    program:'Standard Prosecution', eligible:false,
     history:[
       {date:'Mar 3, 2026 12:45 AM', event:'Arrested near Fenway — Boylston St', badge:'Arrested', badgeClass:'badge-pending', by:'Off. Santos'},
       {date:'Mar 3, 2026 9:00 AM', event:'Arraigned at BMC Central', badge:'Arraigned', badgeClass:'badge-swift', by:'Clerk Magistrate'},
       {date:'Mar 3, 2026 9:25 AM', event:'Referred to SWIFT queue', badge:'Referred', badgeClass:'badge-pending', by:'Dep. DA Blazo'},
     ],
-    notes:[{author:'Dep. DA Blazo', date:'Mar 3, 2026 9:27 AM', text:'First offense, emerging adult (19). Victim not pursuing charges. Minimal contact. Recommend EAP track with conflict resolution module.'}]
+    notes:[{author:'Dep. DA Blazo', date:'Mar 3, 2026 9:27 AM', text:'56A DV form filed — mandatory diversion exclusion per G.L. c. 276, §56A. Domestic relationship confirmed. Proceeding standard prosecution track despite first offense status.'}]
   },
   'RQ-004': {
     id:'RQ-004', initials:'AW', name:'Andre Washington', age:21, dob:'12/04/2003',
-    court:'Boston Municipal Court — Central', charge:'Juror Failure to Attend', statute:'M.G.L. c.234A § 42',
+    court:'Boston Municipal Court — Central', charge:'Juror Failure to Attend', statute:'M.G.L. c.234A §42',
     arrestDate:'March 3, 2026', officer:'Court Officer Diaz · BMC',
+    entryType:'Summons',
     priors:0, priorsNote:'No prior arrests or dispositions',
     incident:'Defendant summoned for jury duty on Feb 24, 2026. Failed to appear without notification. Court follow-up letters sent to last known address (South End). Defendant states he never received the summons — address may have been outdated in registry.',
     window:'✓ 52hr left', status:'Pending', statusClass:'badge-pending',
@@ -4118,7 +4122,7 @@ const DEFENDANTS = {
   },
   'RQ-005': {
     id:'RQ-005', initials:'MC', name:'Mei-Ling Chen', age:23, dob:'05/17/2002',
-    court:'Boston Municipal Court — Central', charge:'Uninsured Motor Vehicle', statute:'M.G.L. c.90 § 34J',
+    court:'Boston Municipal Court — Central', charge:'Uninsured Motor Vehicle', statute:'M.G.L. c.90 §34J',
     arrestDate:'March 3, 2026', officer:'Off. Kim · BPD District C-6',
     priors:0, priorsNote:'No prior arrests',
     incident:'Stopped at a traffic checkpoint on Dorchester Ave. Registry check showed vehicle insurance had lapsed 18 days prior. Defendant produced expired insurance card. Stated she was unaware — auto-renewal had failed due to card expiration. Vehicle impounded per policy.',
@@ -4148,7 +4152,7 @@ const DEFENDANTS = {
   },
   'RQ-007': {
     id:'RQ-007', initials:'VC', name:'Valentina Cruz', age:24, dob:'08/08/2001',
-    court:'Boston Municipal Court — Central', charge:'Trespass', statute:'M.G.L. c.266 § 120',
+    court:'Boston Municipal Court — Central', charge:'Trespass', statute:'M.G.L. c.266 §120',
     arrestDate:'March 1, 2026', officer:'Off. Connelly · BPD District A-7',
     priors:1, priorsNote:'1 prior — trespass (2023), dismissed',
     incident:'Found sleeping in the lobby of a commercial building at 185 Kneeland St after hours. Building management had issued a prior no-trespass notice (2023). No property damage. Officers noted signs of housing instability. Defendant was cooperative.',
@@ -4164,7 +4168,7 @@ const DEFENDANTS = {
   },
   'RQ-008': {
     id:'RQ-008', initials:'ME', name:'Marcus Ellis', age:22, dob:'11/20/2002',
-    court:'Boston Municipal Court — Central', charge:'Threat to Commit Crime', statute:'M.G.L. c.275 § 2',
+    court:'Boston Municipal Court — Central', charge:'Threat to Commit Crime', statute:'M.G.L. c.275 §2',
     arrestDate:'March 3, 2026', officer:'Off. Torres · BPD District D-4',
     priors:0, priorsNote:'No prior arrests — first offense',
     incident:'Verbal confrontation at a convenience store in the Fens. Defendant allegedly told another customer "I\'ll deal with you outside." Complainant filed a police report. No physical contact. Store camera footage reviewed — interaction lasted under 30 seconds. No weapon present.',
@@ -4179,7 +4183,7 @@ const DEFENDANTS = {
   },
   'RQ-009': {
     id:'RQ-009', initials:'FO', name:'Fatima Osei', age:21, dob:'04/02/2004',
-    court:'Boston Municipal Court — Central', charge:'Larceny Under $1,200', statute:'M.G.L. c.266 § 30(1)',
+    court:'Boston Municipal Court — Central', charge:'Larceny Under $1,200', statute:'M.G.L. c.266 §30(1)',
     arrestDate:'March 3, 2026', officer:'Off. Garcia · BPD District B-3',
     priors:0, priorsNote:'No prior arrests',
     incident:'Attempted to leave a T-Mobile store on Washington St with an unpaid phone accessory kit ($89). Stopped at door by store employee. Item recovered immediately. No confrontation. Defendant was a current customer in the store and claimed she forgot to pay.',
@@ -4194,24 +4198,26 @@ const DEFENDANTS = {
   },
   'RQ-010': {
     id:'RQ-010', initials:'DC', name:'Devon Clarke', age:23, dob:'06/15/2002',
-    court:'Boston Municipal Court — Central', charge:'Resisting Arrest', statute:'M.G.L. c.268 § 32B',
+    court:'Boston Municipal Court — Central', charge:'Resisting Arrest', statute:'M.G.L. c.268 §32B',
     arrestDate:'March 3, 2026', officer:'Off. Murphy · BPD District A-1',
+    warrants:true,
     priors:2, priorsNote:'2 priors — disorderly (2022), trespass (2024) — both CWOF',
     incident:'Officers responded to a noise complaint on Tremont St. Defendant was asked to disperse and initially refused. When placed under arrest, pulled away from officers twice before being secured. No officer injury. Defendant had been drinking. No weapons on person.',
-    window:'⚠ 6hr left', status:'In Review', statusClass:'badge-review',
-    program:'SWIFT Diversion', eligible:true,
+    window:'⚠ 6hr left', status:'Ineligible', statusClass:'badge-breach',
+    program:'Standard Prosecution', eligible:false,
     history:[
       {date:'Mar 3, 2026 11:30 PM', event:'Arrested — Tremont St, South End', badge:'Arrested', badgeClass:'badge-pending', by:'Off. Murphy'},
       {date:'Mar 4, 2026 9:00 AM', event:'Arraigned at BMC Central', badge:'Arraigned', badgeClass:'badge-swift', by:'Clerk Magistrate'},
-      {date:'Mar 4, 2026 9:20 AM', event:'Referred to SWIFT — expedited review', badge:'Referred', badgeClass:'badge-pending', by:'Dep. DA Blazo'},
+      {date:'Mar 4, 2026 9:20 AM', event:'Warrant flag detected — BOP check', badge:'Warrant', badgeClass:'badge-breach', by:'MEA System'},
     ],
-    notes:[{author:'Dep. DA Blazo', date:'Mar 4, 2026 9:22 AM', text:'2 prior CWOFs — pattern of low-level charges, no convictions. Resist arrest during dispersal, alcohol involved. SWIFT window closing — review needed before 3PM.'}]
+    notes:[{author:'Dep. DA Blazo', date:'Mar 4, 2026 9:22 AM', text:'Outstanding default warrant from 2024 trespass case (FTA). BOP check flagged active warrant — mandatory diversion exclusion. Standard prosecution track.'}]
   },
   // ── Main Queue ──
   'DEF-001': {
     id:'DEF-001', initials:'JR', name:'James Rivera', age:22, dob:'03/14/2003',
-    court:'Boston Municipal Court — Central', charge:'Simple Drug Possession', statute:'M.G.L. c.94C § 34',
+    court:'Boston Municipal Court — Central', charge:'Drug, Possess Class B', statute:'M.G.L. c.94C §34',
     arrestDate:'March 2, 2026', officer:'Off. Chen · Revere PD',
+    entryType:'Field / Pre-Arrest',
     priors:0, priorsNote:'No prior arrests or dispositions',
     incident:'Found in possession of 0.8g marijuana near Revere Beach Station exit. Personal use quantity. Cooperative at time of arrest. No paraphernalia or other contraband.',
     window:'⚠ 6hr left', status:'Pending', statusClass:'badge-pending',
@@ -4228,7 +4234,7 @@ const DEFENDANTS = {
   },
   'DEF-002': {
     id:'DEF-002', initials:'AK', name:'Amara Kofi', age:19, dob:'07/22/2006',
-    court:'Boston Municipal Court — Central', charge:'Shoplifting < $250', statute:'M.G.L. c.266 § 30A',
+    court:'Boston Municipal Court — Central', charge:'Shoplifting by Asportation', statute:'M.G.L. c.266 §30A',
     arrestDate:'March 2, 2026', officer:'Off. Morris · BPD District A-1',
     priors:0, priorsNote:'No prior arrests',
     incident:'Concealed 3 items in tote bag at Target, Downtown Boston. Items: 1x skincare set ($38), 1x phone case ($19), 1x earbuds ($29). Total: $86. Apprehended at exit by LP officer. All items recovered undamaged.',
@@ -4246,7 +4252,7 @@ const DEFENDANTS = {
   },
   'DEF-003': {
     id:'DEF-003', initials:'DP', name:'Dylan Park', age:24, dob:'11/02/2001',
-    court:'Boston Municipal Court — Central', charge:'Disorderly Conduct', statute:'M.G.L. c.272 § 53',
+    court:'Boston Municipal Court — Central', charge:'Disorderly Conduct', statute:'M.G.L. c.272 §53',
     arrestDate:'Feb 28, 2026', officer:'Off. Santos · BPD District B-2',
     priors:1, priorsNote:'1 prior — disorderly conduct (2023), CWOF',
     incident:'Verbal altercation escalating to physical confrontation outside Fenway Park post-game. Pushed security guard (no injury reported). Officers observed behavior firsthand. Refused initial dispersal order.',
@@ -4265,7 +4271,7 @@ const DEFENDANTS = {
   },
   'DEF-004': {
     id:'DEF-004', initials:'MS', name:'Maya Santos', age:22, dob:'01/08/2004',
-    court:'Chelsea District Court', charge:'Shoplifting < $100', statute:'M.G.L. c.266 § 30A',
+    court:'Chelsea District Court', charge:'Shoplifting by Concealing Mdse', statute:'M.G.L. c.266 §30A',
     arrestDate:'March 1, 2026', officer:'Off. Nguyen · Chelsea PD',
     priors:0, priorsNote:'No prior arrests — first offense',
     incident:'Took 2 grocery items from Star Market, Revere St Chelsea without paying. Items: juice ($4.49), granola bars ($5.99). Total: $10.48. Self-checkout alert triggered. Fully cooperative with store staff and officers.',
@@ -4282,7 +4288,7 @@ const DEFENDANTS = {
   },
   'DEF-005': {
     id:'DEF-005', initials:'TN', name:'Tariq Nasser', age:23, dob:'05/19/2002',
-    court:'Revere District Court', charge:'Simple Drug Possession', statute:'M.G.L. c.94C § 34',
+    court:'Revere District Court', charge:'Drug, Possess Class B', statute:'M.G.L. c.94C §34',
     arrestDate:'March 2, 2026', officer:'Off. DiMaggio · Revere PD',
     priors:0, priorsNote:'No prior arrests',
     incident:'Found in possession of 2.1g marijuana at Revere Beach parking lot. Personal use quantity. Defendant stated substance for personal anxiety management. No other contraband. Cooperative throughout.',
@@ -4299,7 +4305,7 @@ const DEFENDANTS = {
   },
   'DEF-006': {
     id:'DEF-006', initials:'LB', name:'Lena Brinkman', age:20, dob:'09/30/2005',
-    court:'Boston Municipal Court — Central', charge:'Vandalism < $500', statute:'M.G.L. c.266 § 126A',
+    court:'Boston Municipal Court — Central', charge:'Vandalize Property', statute:'M.G.L. c.266 §126A',
     arrestDate:'March 1, 2026', officer:'Off. Walsh · BPD District C-11',
     priors:0, priorsNote:'No prior arrests',
     incident:'Spray-painted tag (approx. 3ft x 5ft) on MBTA bus shelter, Nubian Square. Observed by passing patrol unit. Aerosol cans recovered at scene. City estimates removal at $240. No structural damage.',
@@ -4316,7 +4322,7 @@ const DEFENDANTS = {
   },
   'DEF-007': {
     id:'DEF-007', initials:'RO', name:'Remi Okonjo', age:22, dob:'02/27/2003',
-    court:'Revere District Court', charge:'Simple Drug Possession', statute:'M.G.L. c.94C § 34',
+    court:'Revere District Court', charge:'Drug, Possess Class B', statute:'M.G.L. c.94C §34',
     arrestDate:'March 1, 2026', officer:'Off. Taylor · BPD District B-3',
     priors:0, priorsNote:'No prior arrests',
     incident:'Found in possession of 1.5g marijuana during stop-and-identify near Orient Heights Station. Personal use quantity. Defendant student ID confirmed. No paraphernalia. Cooperative and polite throughout encounter.',
@@ -4334,7 +4340,7 @@ const DEFENDANTS = {
   // ── Boston Center ──
   'MR-001': {
     id:'MR-001', initials:'MR', name:'Marcus Reid', age:20, dob:'05/03/2005',
-    court:'Boston Municipal Court — Central', charge:'Simple Drug Possession', statute:'M.G.L. c.94C § 34',
+    court:'Boston Municipal Court — Central', charge:'Drug, Possess Class B', statute:'M.G.L. c.94C §34',
     arrestDate:'March 3, 2026', officer:'Off. Williams · BPD District B-2',
     priors:0, priorsNote:'No prior arrests or dispositions',
     incident:'Found in possession of 1.2g marijuana at Dudley Square T Station exit. No paraphernalia. Personal use quantity only.',
@@ -4351,7 +4357,7 @@ const DEFENDANTS = {
   },
   'TN-002': {
     id:'TN-002', initials:'TN', name:'Tanya Nguyen', age:23, dob:'09/17/2002',
-    court:'Boston Municipal Court — Central', charge:'Shoplifting < $250', statute:'M.G.L. c.266 § 30A',
+    court:'Boston Municipal Court — Central', charge:'Shoplifting by Asportation', statute:'M.G.L. c.266 §30A',
     arrestDate:'March 2, 2026', officer:'Off. Santos · BPD District A-1',
     priors:0, priorsNote:'No prior arrests',
     incident:"Concealed 2 items in personal bag at Macy\'s Downtown Crossing. Items: 1x cosmetics ($28), 1x accessory ($41). Total: $69. LP officer detained at exit. Items recovered undamaged.",
@@ -4368,7 +4374,7 @@ const DEFENDANTS = {
   },
   'JO-003': {
     id:'JO-003', initials:'JO', name:'Jerome Okafor', age:18, dob:'12/01/2007',
-    court:'Boston Municipal Court — Central', charge:'Disorderly Conduct', statute:'M.G.L. c.272 § 53',
+    court:'Boston Municipal Court — Central', charge:'Disorderly Conduct', statute:'M.G.L. c.272 §53',
     arrestDate:'March 3, 2026', officer:'Off. Murphy · BPD District C-11',
     priors:0, priorsNote:'Juvenile record sealed — not considered',
     window:'✓ 41hr left', status:'Pending', statusClass:'badge-pending',
@@ -4403,7 +4409,7 @@ const DEFENDANTS = {
   // ── Revere ──
   'AP-010': {
     id:'AP-010', initials:'AP', name:'Anthony Palermo', age:19, dob:'06/14/2006',
-    court:'Revere District Court', charge:'Simple Drug Possession', statute:'M.G.L. c.94C § 34',
+    court:'Revere District Court', charge:'Drug, Possess Class B', statute:'M.G.L. c.94C §34',
     arrestDate:'March 3, 2026', officer:'Off. DiMaggio · Revere PD',
     priors:0, priorsNote:'No prior arrests',
     window:'✓ 22hr left', status:'Pending', statusClass:'badge-pending',
@@ -4419,7 +4425,7 @@ const DEFENDANTS = {
   },
   'KM-011': {
     id:'KM-011', initials:'KM', name:'Kevin Mulligan', age:22, dob:'03/30/2003',
-    court:'Revere District Court', charge:'Criminal Trespassing', statute:'M.G.L. c.266 § 120',
+    court:'Revere District Court', charge:'Trespass', statute:'M.G.L. c.266 §120',
     arrestDate:'March 2, 2026', officer:'Off. Connelly · Revere PD',
     priors:0, priorsNote:'No prior arrests',
     incident:'Found inside vacant commercial building at 18 Ocean Ave, Revere. No forced entry — door was unsecured. No property damage. Officers noted defendant appeared to be seeking warmth/shelter.',
@@ -4435,7 +4441,7 @@ const DEFENDANTS = {
   },
   'LG-012': {
     id:'LG-012', initials:'LG', name:'Lena Guerrero', age:20, dob:'11/09/2005',
-    court:'Revere District Court', charge:'Shoplifting < $500', statute:'M.G.L. c.266 § 30A',
+    court:'Revere District Court', charge:'Shoplifting $250+ by Asportation', statute:'M.G.L. c.266 §30A',
     arrestDate:'Feb 27, 2026', officer:'Off. Patel · Revere PD',
     priors:1, priorsNote:'1 prior — shoplifting (2025), CWOF',
     incident:'Concealed 3 grocery items under jacket at Market Basket, 400 Squire Rd Revere. Items: chicken ($12.99), bread ($3.49), baby formula ($22.99). Total: $39.47. LP officer and store manager involved.',
@@ -4454,7 +4460,7 @@ const DEFENDANTS = {
   },
   'RC-013': {
     id:'RC-013', initials:'RC', name:'Ryan Costello', age:25, dob:'08/22/2000',
-    court:'Revere District Court', charge:'Disorderly Conduct', statute:'M.G.L. c.272 § 53',
+    court:'Revere District Court', charge:'Disorderly Conduct', statute:'M.G.L. c.272 §53',
     arrestDate:'March 3, 2026', officer:'Off. Torres · Revere PD',
     priors:0, priorsNote:'No prior arrests',
     window:'⚠ 9hr left', status:'Pending', statusClass:'badge-pending',
@@ -4471,7 +4477,7 @@ const DEFENDANTS = {
   // ── Chelsea ──
   'ES-020': {
     id:'ES-020', initials:'ES', name:'Eduardo Santos', age:21, dob:'04/07/2004',
-    court:'Chelsea District Court', charge:'Simple Drug Possession', statute:'M.G.L. c.94C § 34',
+    court:'Chelsea District Court', charge:'Drug, Possess Class B', statute:'M.G.L. c.94C §34',
     arrestDate:'March 3, 2026', officer:'Off. Garcia · Chelsea PD',
     priors:0, priorsNote:'No prior arrests',
     window:'✓ 33hr left', status:'Pending', statusClass:'badge-pending',
@@ -4487,7 +4493,7 @@ const DEFENDANTS = {
   },
   'MV-021': {
     id:'MV-021', initials:'MV', name:'Maria Vasquez', age:18, dob:'01/19/2008',
-    court:'Chelsea District Court', charge:'Shoplifting < $250', statute:'M.G.L. c.266 § 30A',
+    court:'Chelsea District Court', charge:'Shoplifting by Asportation', statute:'M.G.L. c.266 §30A',
     arrestDate:'March 2, 2026', officer:'Off. Nguyen · Chelsea PD',
     priors:0, priorsNote:'No prior arrests — first offense',
     incident:'Took 1 item (nail polish, $8.99) from Walgreens, 240 Broadway Chelsea without paying. Detected by cashier. Item recovered at door. Fully cooperative.',
@@ -4505,7 +4511,7 @@ const DEFENDANTS = {
   },
   'JF-022': {
     id:'JF-022', initials:'JF', name:'José Flores', age:23, dob:'10/22/2002',
-    court:'Chelsea District Court', charge:'Vandalism < $250', statute:'M.G.L. c.266 § 126A',
+    court:'Chelsea District Court', charge:'Vandalize Property', statute:'M.G.L. c.266 §126A',
     arrestDate:'March 3, 2026', officer:'Off. Walsh · Chelsea PD',
     priors:0, priorsNote:'No prior arrests',
     incident:'Tagged underpass wall at Washington Ave & Chestnut St, Chelsea with spray paint. Tag approx. 4ft x 6ft. City estimates remediation at $180. Caught in the act by patrol unit.',
@@ -4522,7 +4528,7 @@ const DEFENDANTS = {
   },
   'NB-023': {
     id:'NB-023', initials:'NB', name:'Nadia Belkacemi', age:20, dob:'06/03/2005',
-    court:'Chelsea District Court', charge:'Disorderly Conduct', statute:'M.G.L. c.272 § 53',
+    court:'Chelsea District Court', charge:'Disorderly Conduct', statute:'M.G.L. c.272 §53',
     arrestDate:'March 3, 2026', officer:'Off. Kim · Chelsea PD',
     priors:0, priorsNote:'No prior arrests',
     window:'✓ 25hr left', status:'Pending', statusClass:'badge-pending',
@@ -4538,7 +4544,7 @@ const DEFENDANTS = {
   // ── Winthrop ──
   'CB-030': {
     id:'CB-030', initials:'CB', name:'Connor Burke', age:22, dob:'08/15/2003',
-    court:'Winthrop District Court', charge:'Vandalism < $500', statute:'M.G.L. c.266 § 126A',
+    court:'Winthrop District Court', charge:'Vandalize Property', statute:'M.G.L. c.266 §126A',
     arrestDate:'March 2, 2026', officer:'Off. Sullivan · Winthrop PD',
     priors:0, priorsNote:'No prior arrests',
     incident:'Broke single-pane window at 42 Shore Dr, Winthrop (unoccupied seasonal property). Unclear motive — no entry attempt. Property owner estimates repair at $320.',
@@ -4555,7 +4561,7 @@ const DEFENDANTS = {
   },
   'PH-031': {
     id:'PH-031', initials:'PH', name:'Priya Hassan', age:19, dob:'03/27/2006',
-    court:'Winthrop District Court', charge:'Shoplifting < $250', statute:'M.G.L. c.266 § 30A',
+    court:'Winthrop District Court', charge:'Shoplifting by Asportation', statute:'M.G.L. c.266 §30A',
     arrestDate:'March 3, 2026', officer:'Off. Brennan · Winthrop PD',
     priors:0, priorsNote:'No prior arrests — first offense',
     incident:'Took 2 items from CVS, 12 Main St Winthrop without paying. Items: energy drink ($3.49), snack bar ($1.99). Total: $5.48. Self-checkout area. Stopped by loss prevention at exit.',
@@ -4597,23 +4603,27 @@ const DEFENDANT_PHOTOS = {
 function renderEligibilityPanel(d) {
   const isEAP = d.age >= 18 && d.age <= 25;
   const overallEligible = d.eligible;
-  const NON_QUAL = ['assault','battery','robbery','firearm','weapon','domestic violence'];
+  const NON_QUAL = ['assault','battery','robbery','firearm','weapon','domestic violence','strangulation','kidnapping','rape','sex offend'];
   const chargeLC = (d.charge || '').toLowerCase();
   const qualifyingOffense = !NON_QUAL.some(kw => chargeLC.includes(kw));
   const noPriors = d.priors === 0;
   const priorsFail = d.priors >= 3;
   const hasVictimFlag = d.incident && /victim|restraining order/i.test(d.incident);
+  const hasDVFlag = d.dv56a || false;
   const programAvail = d.program && d.program !== 'Standard Prosecution';
+  const entryType = d.entryType || 'Post-Arrest / Pre-Arraignment';
 
   const programSlots = programAvail
     ? `${d.program}: 2 open slots · Chelsea Collaborative: 6 open slots`
     : 'No diversion program currently available';
 
   const summaryText = overallEligible
-    ? `✓ All eligibility criteria met for ${isEAP ? 'Emerging Adult Program (EAP)' : 'SWIFT Diversion'}. Diversion offer is recommended.`
+    ? `✓ All eligibility criteria met per G.L. c. 276A for ${isEAP ? 'Emerging Adult Program (EAP)' : 'SWIFT Diversion'}. Diversion offer is recommended.`
+    : hasDVFlag
+    ? `✗ 56A domestic violence flag — mandatory exclusion per G.L. c. 276, §56A. Standard prosecution track applies.`
     : `✗ ${d.priorsNote || 'One or more eligibility criteria not met'}. Standard prosecution track applies.`;
 
-  const badgeLabel = overallEligible ? (isEAP ? '✓ EAP Eligible' : '✓ Diversion Eligible') : '✗ Ineligible';
+  const badgeLabel = overallEligible ? (isEAP ? '✓ EAP Eligible' : '✓ Diversion Eligible') : hasDVFlag ? '✗ 56A — DV Excluded' : '✗ Ineligible';
   const badgeColor = overallEligible ? '#16A34A' : '#DC2626';
   const badgeBg    = overallEligible ? '#DCFCE7' : '#FEE2E2';
   const summaryBg  = overallEligible ? '#F0FDF4' : '#FEF2F2';
@@ -4622,32 +4632,39 @@ function renderEligibilityPanel(d) {
 
   const criteria = [
     {
-      label: 'Age 18–25 (Emerging Adult threshold)',
-      detail: isEAP
-        ? `Defendant is ${d.age} years old — within EAP range`
-        : `Defendant is ${d.age} years old — outside EAP 18–25 range`,
-      pass: isEAP, warn: !isEAP && overallEligible,
+      label: 'Age ≥ 18 (G.L. c. 276A, §2)',
+      detail: d.age >= 18
+        ? `Defendant is ${d.age} years old` + (isEAP ? ' — within EAP 18–25 range' : ' — eligible, outside EAP age range')
+        : `Defendant is ${d.age} years old — under 18, juvenile track applies`,
+      pass: d.age >= 18 && overallEligible, warn: !isEAP && d.age >= 18 && overallEligible,
     },
     {
       label: 'Qualifying offense (non-violent, non-firearms)',
       detail: qualifyingOffense
-        ? `${d.charge}${d.statute ? ', ' + d.statute : ''} — EAP eligible`
+        ? `${d.charge}, ${d.statute || 'statute pending'} — diversion eligible`
         : `${d.charge} — does not qualify for diversion`,
       pass: qualifyingOffense && overallEligible,
     },
     {
-      label: 'No disqualifying criminal history',
+      label: 'No convictions — BOP + Triple-I clear',
       detail: noPriors
-        ? 'Zero prior arraignments or SJC records found'
-        : `${d.priors} prior charge${d.priors === 1 ? '' : 's'} — ${d.priorsNote}`,
+        ? 'Board of Probation: 0 convictions · Interstate (Triple-I): clear'
+        : `BOP shows ${d.priors} prior charge${d.priors === 1 ? '' : 's'} — ${d.priorsNote}`,
       pass: noPriors, fail: priorsFail,
     },
     {
-      label: 'No active restraining orders or victim flags',
-      detail: hasVictimFlag
+      label: 'No 209A orders, no 56A DV flag',
+      detail: hasDVFlag
+        ? '56A domestic violence allegation on file — mandatory exclusion'
+        : hasVictimFlag
         ? 'Victim identified or restraining order on file — review required'
-        : 'No victim identified; no court-issued prohibitions',
-      pass: !hasVictimFlag,
+        : 'No 209A orders; no 56A flag; no victim-identified prohibitions',
+      pass: !hasVictimFlag && !hasDVFlag, fail: hasDVFlag,
+    },
+    {
+      label: 'No outstanding warrants',
+      detail: d.warrants ? `Active warrant(s) on file — ineligible` : 'No outstanding warrants in MA or interstate',
+      pass: !d.warrants && overallEligible,
     },
     {
       label: 'Program capacity available',
@@ -4670,7 +4687,10 @@ function renderEligibilityPanel(d) {
 
   return `<div style="border:1.5px solid #E5E7EB;border-radius:12px;padding:18px 20px;background:#fff">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #E5E7EB">
-      <div style="font-size:16px;font-weight:800;color:#0F172A">Eligibility Determination</div>
+      <div>
+        <div style="font-size:16px;font-weight:800;color:#0F172A">Eligibility Determination</div>
+        <div style="font-size:11px;color:#94A3B8;margin-top:2px;">G.L. c. 276A · Entry: ${entryType}</div>
+      </div>
       <span style="background:${badgeBg};color:${badgeColor};font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px;border:1px solid ${badgeColor}30;display:inline-flex;align-items:center;gap:5px">
         <span style="width:7px;height:7px;background:${badgeColor};border-radius:50%;display:inline-block"></span>${badgeLabel}
       </span>
@@ -5071,40 +5091,40 @@ const statPopupData = {
   pending: {
     title: 'Pending Review — 17 Cases',
     people: [
-      { initials:'JR', name:'James Rivera', charge:'Simple Possession', time:'6hr left', color:'#EDE9FE', text:'#7C3AED' },
-      { initials:'AK', name:'Amara Kofi', charge:'Shoplifting <$250', time:'31hr left', color:'#FEF9C3', text:'#A16207' },
-      { initials:'MS', name:'Maya Santos', charge:'Shoplifting <$100', time:'44hr left', color:'#DCFCE7', text:'#15803D' },
-      { initials:'TN', name:'Tariq Nasser', charge:'Simple Possession', time:'58hr left', color:'#EDE9FE', text:'#7C3AED' },
+      { initials:'JR', name:'James Rivera', charge:'Drug, Possess Class B', time:'6hr left', color:'#EDE9FE', text:'#7C3AED' },
+      { initials:'AK', name:'Amara Kofi', charge:'Shoplifting by Asportation', time:'31hr left', color:'#FEF9C3', text:'#A16207' },
+      { initials:'MS', name:'Maya Santos', charge:'Shoplifting by Concealing Mdse', time:'44hr left', color:'#DCFCE7', text:'#15803D' },
+      { initials:'TN', name:'Tariq Nasser', charge:'Drug, Possess Class B', time:'58hr left', color:'#EDE9FE', text:'#7C3AED' },
       { initials:'DT', name:'Darius J. Tatum', charge:'Field Encounter', time:'New', color:'#FEE2E2', text:'#991B1B' },
       { initials:'DP', name:'Dylan Park', charge:'Disorderly Conduct', time:'OVERDUE', color:'#FEE2E2', text:'#991B1B' },
-      { initials:'LM', name:'Lucas Mendes', charge:'Trespassing', time:'12hr left', color:'#DBEAFE', text:'#1D4ED8' },
-      { initials:'RJ', name:'Rachel James', charge:'Petty Theft', time:'8hr left', color:'#FCE7F3', text:'#9D174D' },
-      { initials:'KW', name:'Kevin Washington', charge:'Public Intox', time:'22hr left', color:'#FEF3C7', text:'#92400E' },
-      { initials:'AP', name:'Ana Perez', charge:'Shoplifting <$100', time:'36hr left', color:'#DCFCE7', text:'#15803D' },
-      { initials:'JB', name:'Jason Brooks', charge:'Vandalism', time:'48hr left', color:'#E0E7FF', text:'#3730A3' },
-      { initials:'SM', name:'Shanice Moore', charge:'Simple Possession', time:'15hr left', color:'#EDE9FE', text:'#7C3AED' },
+      { initials:'LM', name:'Lucas Mendes', charge:'Trespass', time:'12hr left', color:'#DBEAFE', text:'#1D4ED8' },
+      { initials:'RJ', name:'Rachel James', charge:'Larceny Under $1200', time:'8hr left', color:'#FCE7F3', text:'#9D174D' },
+      { initials:'KW', name:'Kevin Washington', charge:'Disorderly Conduct', time:'22hr left', color:'#FEF3C7', text:'#92400E' },
+      { initials:'AP', name:'Ana Perez', charge:'Shoplifting by Concealing Mdse', time:'36hr left', color:'#DCFCE7', text:'#15803D' },
+      { initials:'JB', name:'Jason Brooks', charge:'Vandalize Property', time:'48hr left', color:'#E0E7FF', text:'#3730A3' },
+      { initials:'SM', name:'Shanice Moore', charge:'Drug, Possess Class B', time:'15hr left', color:'#EDE9FE', text:'#7C3AED' },
       { initials:'DH', name:'David Hernandez', charge:'Disorderly Conduct', time:'52hr left', color:'#FEE2E2', text:'#991B1B' },
-      { initials:'TL', name:'Tanya Lewis', charge:'Trespassing', time:'28hr left', color:'#DBEAFE', text:'#1D4ED8' },
-      { initials:'MC', name:'Marcus Chen', charge:'Shoplifting <$250', time:'40hr left', color:'#FEF9C3', text:'#A16207' },
-      { initials:'NR', name:'Nina Rodriguez', charge:'Simple Possession', time:'19hr left', color:'#EDE9FE', text:'#7C3AED' },
-      { initials:'BT', name:'Brian Thomas', charge:'Public Intox', time:'62hr left', color:'#FEF3C7', text:'#92400E' },
+      { initials:'TL', name:'Tanya Lewis', charge:'Trespass', time:'28hr left', color:'#DBEAFE', text:'#1D4ED8' },
+      { initials:'MC', name:'Marcus Chen', charge:'Shoplifting by Asportation', time:'40hr left', color:'#FEF9C3', text:'#A16207' },
+      { initials:'NR', name:'Nina Rodriguez', charge:'Drug, Possess Class B', time:'19hr left', color:'#EDE9FE', text:'#7C3AED' },
+      { initials:'BT', name:'Brian Thomas', charge:'Disorderly Conduct', time:'62hr left', color:'#FEF3C7', text:'#92400E' },
     ]
   },
   approved: {
     title: 'Approved Today — 12 Cases',
     people: [
-      { initials:'CW', name:'Carlos Williams', charge:'Shoplifting <$100', time:'Approved 8:12 AM', color:'#DCFCE7', text:'#15803D' },
-      { initials:'EM', name:'Elena Martinez', charge:'Simple Possession', time:'Approved 8:45 AM', color:'#DCFCE7', text:'#15803D' },
-      { initials:'TP', name:'Tyler Price', charge:'Trespassing', time:'Approved 9:03 AM', color:'#DCFCE7', text:'#15803D' },
-      { initials:'AD', name:'Aaliyah Davis', charge:'Petty Theft', time:'Approved 9:28 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'CW', name:'Carlos Williams', charge:'Shoplifting by Concealing Mdse', time:'Approved 8:12 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'EM', name:'Elena Martinez', charge:'Drug, Possess Class B', time:'Approved 8:45 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'TP', name:'Tyler Price', charge:'Trespass', time:'Approved 9:03 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'AD', name:'Aaliyah Davis', charge:'Larceny Under $1200', time:'Approved 9:28 AM', color:'#DCFCE7', text:'#15803D' },
       { initials:'RK', name:'Ryan Kim', charge:'Disorderly Conduct', time:'Approved 9:55 AM', color:'#DCFCE7', text:'#15803D' },
-      { initials:'JF', name:'Jordan Foster', charge:'Public Intox', time:'Approved 10:11 AM', color:'#DCFCE7', text:'#15803D' },
-      { initials:'KA', name:'Keisha Adams', charge:'Simple Possession', time:'Approved 10:34 AM', color:'#DCFCE7', text:'#15803D' },
-      { initials:'MO', name:'Miguel Ortiz', charge:'Shoplifting <$250', time:'Approved 10:58 AM', color:'#DCFCE7', text:'#15803D' },
-      { initials:'SW', name:'Sarah Wright', charge:'Vandalism', time:'Approved 11:15 AM', color:'#DCFCE7', text:'#15803D' },
-      { initials:'DB', name:'Derek Brown', charge:'Trespassing', time:'Approved 11:42 AM', color:'#DCFCE7', text:'#15803D' },
-      { initials:'LP', name:'Lisa Park', charge:'Petty Theft', time:'Approved 12:05 PM', color:'#DCFCE7', text:'#15803D' },
-      { initials:'JG', name:'James Garcia', charge:'Simple Possession', time:'Approved 12:30 PM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'JF', name:'Jordan Foster', charge:'Disorderly Conduct', time:'Approved 10:11 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'KA', name:'Keisha Adams', charge:'Drug, Possess Class B', time:'Approved 10:34 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'MO', name:'Miguel Ortiz', charge:'Shoplifting by Asportation', time:'Approved 10:58 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'SW', name:'Sarah Wright', charge:'Vandalize Property', time:'Approved 11:15 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'DB', name:'Derek Brown', charge:'Trespass', time:'Approved 11:42 AM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'LP', name:'Lisa Park', charge:'Larceny Under $1200', time:'Approved 12:05 PM', color:'#DCFCE7', text:'#15803D' },
+      { initials:'JG', name:'James Garcia', charge:'Drug, Possess Class B', time:'Approved 12:30 PM', color:'#DCFCE7', text:'#15803D' },
     ]
   },
   avgtime: {
