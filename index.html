@@ -387,9 +387,19 @@ html, body { height: 100%; background: #EEF5FF; color: #0A1628; font-family: var
 /* ── SERVICE PROVIDERS ── */
 .provider-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .provider-card {
-  background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 20px; transition: all .15s;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 20px; transition: all .15s; cursor:pointer;
 }
-.provider-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.06); border-color: var(--blue); }
+.provider-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.06); border-color: var(--blue); transform:translateY(-1px); }
+.provider-card:active { transform:translateY(0); }
+.provider-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.provider-modal-overlay.open{opacity:1;pointer-events:all;}
+.provider-modal{background:#fff;border-radius:16px;width:560px;max-height:85vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.2);padding:28px;position:relative;}
+.provider-modal .pm-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;border:1px solid var(--gray-200);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gray-500);}
+.provider-modal .pm-close:hover{background:var(--gray-50);color:var(--gray-900);}
+.provider-modal .pm-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;margin-right:6px;margin-bottom:6px;}
+.provider-modal .pm-stat{display:flex;flex-direction:column;align-items:center;padding:12px;background:var(--gray-50);border-radius:10px;flex:1;}
+.provider-modal .pm-stat-val{font-size:22px;font-weight:800;color:var(--gray-900);}
+.provider-modal .pm-stat-label{font-size:11px;color:var(--gray-500);margin-top:2px;}
 .provider-name { font-weight: 700; font-size: 14px; color: var(--gray-900); margin-bottom: 3px; }
 .provider-type { font-size: 12px; color: var(--blue); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 10px; }
 .provider-detail { font-size: 12.5px; color: var(--gray-600); display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
@@ -5565,6 +5575,78 @@ document.addEventListener('click', e => {
   if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.closest('.icon-btn')) {
     panel.classList.remove('open');
   }
+});
+
+// ── Provider Card Click Modal ──
+const providerModalOverlay = document.createElement('div');
+providerModalOverlay.className = 'provider-modal-overlay';
+providerModalOverlay.innerHTML = '<div class="provider-modal" id="pm-content"></div>';
+document.body.appendChild(providerModalOverlay);
+providerModalOverlay.addEventListener('click', e => { if (e.target === providerModalOverlay) providerModalOverlay.classList.remove('open'); });
+
+function openProviderModal(card) {
+  const name = card.querySelector('.provider-name')?.textContent || '';
+  const type = card.querySelector('.provider-type')?.textContent || '';
+  const details = [...card.querySelectorAll('.provider-detail')].map(d => d.textContent.trim());
+  const tasks = card.querySelector('.divider')?.nextElementSibling?.textContent || '';
+  const checkin = card.querySelector('.divider')?.nextElementSibling?.nextElementSibling?.textContent || '';
+  const stats = card.querySelectorAll('div[style*="color:#4A7FA0"]');
+  const statsText = stats.length ? stats[stats.length - 1].textContent : '';
+  const hasBorderTop = card.style.borderTop;
+  const isCommService = !!hasBorderTop;
+  const verified = card.innerHTML.includes('MEA Verified');
+  const capacityFill = card.querySelector('.capacity-fill');
+  const capacityPct = capacityFill ? capacityFill.style.width : null;
+
+  const location = details.find(d => d.includes('📍')) || '';
+  const hours = details.find(d => d.includes('🕐')) || '';
+  const distance = details.find(d => d.includes('📏')) || '';
+  const slots = details.find(d => d.includes('✓') || d.includes('⚠') || d.includes('remaining') || d.includes('open')) || '';
+  const capacity = details.find(d => d.includes('👥')) || '';
+  const window = details.find(d => d.includes('⏱')) || '';
+  const target = details.find(d => d.includes('🎯')) || '';
+
+  const pm = document.getElementById('pm-content');
+  pm.innerHTML = `
+    <button class="pm-close" onclick="document.querySelector('.provider-modal-overlay').classList.remove('open')">&times;</button>
+    <div style="margin-bottom:16px;">
+      <div style="font-size:20px;font-weight:800;color:var(--gray-900);margin-bottom:4px;">${name}</div>
+      <div style="font-size:13px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">${type}</div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+      ${verified ? '<span class="pm-badge" style="background:#DBEAFE;color:#1D4ED8;">✓ MEA Verified</span>' : ''}
+      ${isCommService ? '<span class="pm-badge" style="background:#F0FDF4;color:#16A34A;">Community Service</span>' : '<span class="pm-badge" style="background:#FEF3C7;color:#92400E;">Diversion Program</span>'}
+      <span class="pm-badge" style="background:#F1F5F9;color:#475569;">Suffolk County</span>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:20px;">
+      ${slots ? `<div class="pm-stat"><div class="pm-stat-val" style="color:var(--green);">${(slots.match(/\\d+/) || ['—'])[0]}</div><div class="pm-stat-label">Open Slots</div></div>` : ''}
+      ${capacityPct ? `<div class="pm-stat"><div class="pm-stat-val">${capacityPct}</div><div class="pm-stat-label">Capacity Used</div></div>` : ''}
+      <div class="pm-stat"><div class="pm-stat-val" style="color:var(--blue);">Active</div><div class="pm-stat-label">Status</div></div>
+    </div>
+    <div style="border:1px solid var(--gray-200);border-radius:10px;padding:16px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:10px;">Details</div>
+      ${location ? `<div style="font-size:13px;color:var(--gray-600);margin-bottom:6px;">${location}</div>` : ''}
+      ${hours ? `<div style="font-size:13px;color:var(--gray-600);margin-bottom:6px;">${hours}</div>` : ''}
+      ${distance ? `<div style="font-size:13px;color:var(--gray-600);margin-bottom:6px;">${distance}</div>` : ''}
+      ${capacity ? `<div style="font-size:13px;color:var(--gray-600);margin-bottom:6px;">${capacity}</div>` : ''}
+      ${window ? `<div style="font-size:13px;color:var(--gray-600);margin-bottom:6px;">${window}</div>` : ''}
+      ${target ? `<div style="font-size:13px;color:var(--gray-600);margin-bottom:6px;">${target}</div>` : ''}
+    </div>
+    ${tasks ? `<div style="border:1px solid var(--gray-200);border-radius:10px;padding:16px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:6px;">Tasks & Verification</div>
+      <div style="font-size:13px;color:var(--gray-600);margin-bottom:4px;">${tasks}</div>
+      ${checkin ? `<div style="font-size:13px;color:var(--gray-600);">${checkin}</div>` : ''}
+    </div>` : ''}
+    ${statsText ? `<div style="font-size:12px;color:var(--gray-500);text-align:center;padding-top:8px;border-top:1px solid var(--gray-100);">${statsText}</div>` : ''}
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--blue);background:#fff;color:var(--blue);font-weight:700;font-size:13px;cursor:pointer;" onclick="document.querySelector('.provider-modal-overlay').classList.remove('open')">Close</button>
+      <button style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--blue);color:#fff;font-weight:700;font-size:13px;cursor:pointer;">Assign Participant</button>
+    </div>`;
+  providerModalOverlay.classList.add('open');
+}
+
+document.querySelectorAll('.provider-card').forEach(card => {
+  card.addEventListener('click', () => openProviderModal(card));
 });
 </script>
 </body>
