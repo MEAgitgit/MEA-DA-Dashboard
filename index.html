@@ -1210,10 +1210,10 @@ select.form-control { cursor: pointer; }
           <span class="badge badge-swift" style="margin-left:auto;font-size:13px;padding:6px 14px">SWIFT Active</span>
         </div>
         <div class="stats-row">
-          <div class="stat-card"><div class="stat-label">Pending Review</div><div class="stat-value blue">11</div><div class="stat-sub">Awaiting decision</div></div>
-          <div class="stat-card"><div class="stat-label">Approved Today</div><div class="stat-value green">18</div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 5</span> vs yesterday</div></div>
-          <div class="stat-card"><div class="stat-label">Avg Review Time</div><div class="stat-value">3.8<span style="font-size:18px;font-weight:400">m</span></div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 12%</span> faster this week</div></div>
-          <div class="stat-card"><div class="stat-label">Missed Deadlines</div><div class="stat-value red">2</div><div class="stat-sub">72hr window exceeded</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('pending')"><div class="stat-label">Pending Review</div><div class="stat-value blue">11</div><div class="stat-sub">Awaiting decision</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('approved')"><div class="stat-label">Approved Today</div><div class="stat-value green">18</div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 5</span> vs yesterday</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('avgtime')"><div class="stat-label">Avg Review Time</div><div class="stat-value">3.8<span style="font-size:18px;font-weight:400">m</span></div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 12%</span> faster this week</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('missed')"><div class="stat-label">Missed Deadlines</div><div class="stat-value red">2</div><div class="stat-sub">72hr window exceeded</div></div>
         </div>
         <div class="two-col">
           <div class="card">
@@ -1267,10 +1267,10 @@ select.form-control { cursor: pointer; }
           <span class="badge badge-swift" style="margin-left:auto;font-size:13px;padding:6px 14px">SWIFT Active</span>
         </div>
         <div class="stats-row">
-          <div class="stat-card"><div class="stat-label">Pending Review</div><div class="stat-value blue">6</div><div class="stat-sub">Awaiting decision</div></div>
-          <div class="stat-card"><div class="stat-label">Approved Today</div><div class="stat-value green">8</div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 2</span> vs yesterday</div></div>
-          <div class="stat-card"><div class="stat-label">Avg Review Time</div><div class="stat-value">5.1<span style="font-size:18px;font-weight:400">m</span></div><div class="stat-sub flex gap-8"><span class="stat-delta down">↓ 3%</span> vs last week</div></div>
-          <div class="stat-card"><div class="stat-label">Missed Deadlines</div><div class="stat-value red">1</div><div class="stat-sub">72hr window exceeded</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('pending')"><div class="stat-label">Pending Review</div><div class="stat-value blue">6</div><div class="stat-sub">Awaiting decision</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('approved')"><div class="stat-label">Approved Today</div><div class="stat-value green">8</div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 2</span> vs yesterday</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('avgtime')"><div class="stat-label">Avg Review Time</div><div class="stat-value">5.1<span style="font-size:18px;font-weight:400">m</span></div><div class="stat-sub flex gap-8"><span class="stat-delta down">↓ 3%</span> vs last week</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('missed')"><div class="stat-label">Missed Deadlines</div><div class="stat-value red">1</div><div class="stat-sub">72hr window exceeded</div></div>
         </div>
         <div class="two-col">
           <div class="card">
@@ -1322,10 +1322,10 @@ select.form-control { cursor: pointer; }
           <span class="badge badge-swift" style="margin-left:auto;font-size:13px;padding:6px 14px">SWIFT Active</span>
         </div>
         <div class="stats-row">
-          <div class="stat-card"><div class="stat-label">Pending Review</div><div class="stat-value blue">5</div><div class="stat-sub">Awaiting decision</div></div>
-          <div class="stat-card"><div class="stat-label">Approved Today</div><div class="stat-value green">7</div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 1</span> vs yesterday</div></div>
-          <div class="stat-card"><div class="stat-label">Avg Review Time</div><div class="stat-value">4.7<span style="font-size:18px;font-weight:400">m</span></div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 8%</span> faster this week</div></div>
-          <div class="stat-card"><div class="stat-label">Missed Deadlines</div><div class="stat-value green">0</div><div class="stat-sub">All windows met</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('pending')"><div class="stat-label">Pending Review</div><div class="stat-value blue">5</div><div class="stat-sub">Awaiting decision</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('approved')"><div class="stat-label">Approved Today</div><div class="stat-value green">7</div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 1</span> vs yesterday</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('avgtime')"><div class="stat-label">Avg Review Time</div><div class="stat-value">4.7<span style="font-size:18px;font-weight:400">m</span></div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 8%</span> faster this week</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('missed')"><div class="stat-label">Missed Deadlines</div><div class="stat-value green">0</div><div class="stat-sub">All windows met</div></div>
         </div>
         <div class="two-col">
           <div class="card">
@@ -1377,10 +1377,10 @@ select.form-control { cursor: pointer; }
           <span class="badge" style="margin-left:auto;font-size:13px;padding:6px 14px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0">Low Volume</span>
         </div>
         <div class="stats-row">
-          <div class="stat-card"><div class="stat-label">Pending Review</div><div class="stat-value blue">2</div><div class="stat-sub">Awaiting decision</div></div>
-          <div class="stat-card"><div class="stat-label">Approved Today</div><div class="stat-value green">3</div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 1</span> vs yesterday</div></div>
-          <div class="stat-card"><div class="stat-label">Avg Review Time</div><div class="stat-value">6.2<span style="font-size:18px;font-weight:400">m</span></div><div class="stat-sub">Consistent pace</div></div>
-          <div class="stat-card"><div class="stat-label">Missed Deadlines</div><div class="stat-value green">0</div><div class="stat-sub">All windows met</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('pending')"><div class="stat-label">Pending Review</div><div class="stat-value blue">2</div><div class="stat-sub">Awaiting decision</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('approved')"><div class="stat-label">Approved Today</div><div class="stat-value green">3</div><div class="stat-sub flex gap-8"><span class="stat-delta up">↑ 1</span> vs yesterday</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('avgtime')"><div class="stat-label">Avg Review Time</div><div class="stat-value">6.2<span style="font-size:18px;font-weight:400">m</span></div><div class="stat-sub">Consistent pace</div></div>
+          <div class="stat-card" style="cursor:pointer" onclick="showStatPopup('missed')"><div class="stat-label">Missed Deadlines</div><div class="stat-value green">0</div><div class="stat-sub">All windows met</div></div>
         </div>
         <div class="two-col">
           <div class="card">
