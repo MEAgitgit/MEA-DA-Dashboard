@@ -877,17 +877,12 @@ select.form-control { cursor: pointer; }
 
 <script>
 (function(){
-  // If already authed this session, remove gate immediately
-  if(sessionStorage.getItem('mea-da-auth')==='1'){
-    var g=document.getElementById('mea-gate');
-    if(g) g.style.display='none';
-  }
+  // Password required every time
 })();
 
 function meaGateCheck(){
   var pw=document.getElementById('gate-pw').value;
   if(pw==='4321'){
-    sessionStorage.setItem('mea-da-auth','1');
     var gate=document.getElementById('mea-gate');
     gate.style.opacity='0';
     setTimeout(function(){ gate.style.display='none'; },400);
