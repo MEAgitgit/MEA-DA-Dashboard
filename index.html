@@ -836,6 +836,90 @@ select.form-control { cursor: pointer; }
 </style>
 </head>
 <body>
+
+<!-- ══════════════════════ PASSWORD GATE ══════════════════════ -->
+<div id="mea-gate" style="
+  position:fixed; inset:0; z-index:99999;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:linear-gradient(180deg,#13276A 0%,#000513 100%);
+  font-family:'Gilroy','Plus Jakarta Sans',sans-serif;
+  transition:opacity .4s ease;
+">
+  <div style="text-align:center">
+    <div style="color:#fff;font-size:28px;font-weight:800;letter-spacing:2px;margin-bottom:6px;">MEA</div>
+    <div style="color:rgba(255,255,255,.55);font-size:14px;font-weight:500;letter-spacing:.5px;margin-bottom:36px;">District Attorney Dashboard</div>
+    <div id="gate-input-wrap" style="display:inline-block;">
+      <input id="gate-pw" type="password" maxlength="4" inputmode="numeric" placeholder="••••" autocomplete="off"
+        style="
+          width:180px; padding:12px 16px; text-align:center; font-size:20px; letter-spacing:8px;
+          border:2px solid rgba(255,255,255,.2); border-radius:10px;
+          background:rgba(255,255,255,.07); color:#fff; outline:none;
+          font-family:inherit; transition:border-color .2s;
+        "
+        onfocus="this.style.borderColor='#3A9AE8'"
+        onblur="this.style.borderColor='rgba(255,255,255,.2)'"
+      >
+    </div>
+    <div id="gate-error" style="color:#EF4444;font-size:13px;margin-top:10px;height:18px;opacity:0;transition:opacity .25s;">Incorrect password</div>
+    <div style="margin-top:12px;">
+      <button id="gate-btn" onclick="meaGateCheck()" style="
+        padding:10px 40px; border:none; border-radius:8px; cursor:pointer;
+        background:linear-gradient(135deg,#1442D9,#3A9AE8); color:#fff;
+        font-size:15px; font-weight:700; font-family:inherit; letter-spacing:.5px;
+        transition:transform .15s,box-shadow .15s;
+      "
+        onmouseenter="this.style.transform='scale(1.04)';this.style.boxShadow='0 4px 20px rgba(58,154,232,.4)'"
+        onmouseleave="this.style.transform='scale(1)';this.style.boxShadow='none'"
+      >Enter</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // If already authed this session, remove gate immediately
+  if(sessionStorage.getItem('mea-da-auth')==='1'){
+    var g=document.getElementById('mea-gate');
+    if(g) g.style.display='none';
+  }
+})();
+
+function meaGateCheck(){
+  var pw=document.getElementById('gate-pw').value;
+  if(pw==='4321'){
+    sessionStorage.setItem('mea-da-auth','1');
+    var gate=document.getElementById('mea-gate');
+    gate.style.opacity='0';
+    setTimeout(function(){ gate.style.display='none'; },400);
+  } else {
+    // Show error
+    var err=document.getElementById('gate-error');
+    err.style.opacity='1';
+    setTimeout(function(){ err.style.opacity='0'; },1800);
+    // Shake
+    var wrap=document.getElementById('gate-input-wrap');
+    wrap.style.animation='none';
+    void wrap.offsetWidth; // reflow
+    wrap.style.animation='gate-shake .4s ease';
+    document.getElementById('gate-pw').value='';
+  }
+}
+
+// Enter key support
+document.getElementById('gate-pw').addEventListener('keydown',function(e){
+  if(e.key==='Enter') meaGateCheck();
+});
+</script>
+<style>
+@keyframes gate-shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-12px)}
+  40%{transform:translateX(10px)}
+  60%{transform:translateX(-8px)}
+  80%{transform:translateX(6px)}
+}
+</style>
+
 <div class="shell">
 
   <!-- ══════════════════════ SIDEBAR ══════════════════════ -->
