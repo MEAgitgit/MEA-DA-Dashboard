@@ -177,7 +177,8 @@ html, body { height: 100%; background: #EEF5FF; color: #0A1628; font-family: var
 
 /* providers + reports landed outside .main due to a div mismatch — pin them into the content area */
 #screen-providers.active,
-#screen-reports.active {
+#screen-reports.active,
+#screen-outcomes.active {
   position: fixed;
   top: var(--header-h);
   left: var(--sidebar-w);
@@ -208,6 +209,107 @@ html, body { height: 100%; background: #EEF5FF; color: #0A1628; font-family: var
 .stat-delta { font-size: 12px; font-weight: 600; }
 .stat-delta.up { color: var(--green); }
 .stat-delta.dn { color: var(--red); }
+
+/* ── OUTCOMES & ROI SCREEN ── */
+.outcomes-hero {
+  background: linear-gradient(135deg, var(--navy) 0%, #132B50 100%);
+  border-radius: 16px; padding: 40px 44px; margin-bottom: 24px;
+  position: relative; overflow: hidden;
+}
+.outcomes-hero::before {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: rgba(130,203,245,.1);
+}
+.outcomes-hero::after {
+  content: ''; position: absolute; bottom: -60px; right: 80px;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: rgba(34,197,94,.08);
+}
+.outcomes-hero-amount {
+  font-family: var(--font-h); font-size: 56px; font-weight: 800;
+  color: #fff; letter-spacing: -1px; position: relative; z-index: 1;
+}
+.outcomes-hero-amount .dollar { color: var(--green); }
+.outcomes-hero-sub {
+  font-size: 16px; color: rgba(255,255,255,.6); margin-top: 4px;
+  position: relative; z-index: 1;
+}
+.outcomes-hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(34,197,94,.15); color: var(--green);
+  font-size: 13px; font-weight: 600; border-radius: 20px;
+  padding: 5px 14px; margin-top: 12px; position: relative; z-index: 1;
+}
+.outcomes-section-title {
+  font-family: var(--font-h); font-size: 17px; font-weight: 700;
+  color: var(--gray-900); margin-bottom: 16px; margin-top: 8px;
+}
+.outcomes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.outcomes-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+
+.outcome-stat-card {
+  background: #fff; border-radius: 12px; padding: 24px;
+  border: 1px solid #D2E9F7; display: flex; flex-direction: column; gap: 6px;
+  box-shadow: 0 1px 4px rgba(20,80,140,.04);
+}
+.outcome-stat-card .os-label {
+  font-size: 12px; font-weight: 600; color: var(--gray-500);
+  text-transform: uppercase; letter-spacing: .5px;
+}
+.outcome-stat-card .os-value {
+  font-family: var(--font-h); font-size: 32px; font-weight: 800; color: var(--gray-900);
+}
+.outcome-stat-card .os-value.green { color: var(--green); }
+.outcome-stat-card .os-value.blue { color: var(--blue); }
+.outcome-stat-card .os-sub {
+  font-size: 12px; color: var(--gray-500);
+}
+
+/* Cost bar chart */
+.cost-bars { display: flex; align-items: flex-end; gap: 32px; justify-content: center; padding: 20px 0; }
+.cost-bar-group { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.cost-bar {
+  width: 80px; border-radius: 8px 8px 0 0;
+  transition: height .6s ease;
+}
+.cost-bar-label { font-size: 12px; font-weight: 600; color: var(--gray-500); }
+.cost-bar-value { font-family: var(--font-h); font-size: 15px; font-weight: 700; }
+
+/* Completion ring */
+.completion-ring-wrap { display: flex; align-items: center; justify-content: center; padding: 12px 0; }
+.completion-ring-wrap svg { transform: rotate(-90deg); }
+.completion-ring-label {
+  font-family: var(--font-h); font-size: 28px; font-weight: 800;
+  color: var(--green); text-anchor: middle; dominant-baseline: central;
+  transform: rotate(90deg); transform-origin: center;
+}
+
+/* Horizontal bar charts */
+.hbar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.hbar-label { font-size: 13px; font-weight: 500; color: var(--gray-700); width: 130px; text-align: right; flex-shrink: 0; }
+.hbar-track { flex: 1; height: 24px; background: var(--gray-100); border-radius: 6px; overflow: hidden; position: relative; }
+.hbar-fill { height: 100%; border-radius: 6px; transition: width .6s ease; }
+.hbar-pct { font-size: 12px; font-weight: 600; color: var(--gray-700); width: 40px; flex-shrink: 0; }
+
+/* Comparison table */
+.compare-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.compare-table th {
+  font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px;
+  color: var(--gray-500); padding: 12px 16px; text-align: left;
+  border-bottom: 2px solid var(--gray-200);
+}
+.compare-table th:nth-child(3) { color: var(--green); }
+.compare-table td {
+  padding: 14px 16px; font-size: 14px; color: var(--gray-900);
+  border-bottom: 1px solid var(--gray-100);
+}
+.compare-table td.trad { color: var(--gray-500); }
+.compare-table td.mea-win {
+  color: var(--green); font-weight: 700;
+  background: rgba(34,197,94,.05);
+}
+.compare-table tr:last-child td { border-bottom: none; }
 
 /* ── CARDS ── */
 .card {
@@ -1220,6 +1322,11 @@ function injectApiRows() {
     </div>
     <div class="nav-item">
       <span class="nav-icon">⚙</span> Settings
+    </div>
+
+    <div class="sidebar-section-label">Analytics</div>
+    <div class="nav-item" data-screen="outcomes" onclick="nav('outcomes')">
+      <span class="nav-icon">📈</span> Outcomes & ROI
     </div>
 
     <div class="sidebar-footer">
@@ -3595,6 +3702,218 @@ function injectApiRows() {
 
       </div><!-- /screen-reports -->
 
+
+      <!-- ══════════════════════ OUTCOMES & ROI ══════════════════════ -->
+      <div class="screen" id="screen-outcomes">
+
+        <!-- Section E: Hero Headline -->
+        <div class="outcomes-hero">
+          <div class="outcomes-hero-amount"><span class="dollar">$</span><span id="oc-hero-savings">252,700</span></div>
+          <div class="outcomes-hero-sub">saved across Suffolk County in Q1 2026</div>
+          <div class="outcomes-hero-badge">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="oc-hero-cases">38</span> cases diverted from traditional prosecution
+          </div>
+        </div>
+
+        <!-- Section A: Cost Savings Calculator -->
+        <div class="outcomes-section-title">Cost Savings Calculator</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px">
+          <div class="card" style="padding:28px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Cost per Traditional Prosecution</div>
+                <div style="font-family:var(--font-h);font-size:28px;font-weight:800;color:var(--red)">$7,500</div>
+                <div style="font-size:11px;color:var(--gray-400);margin-top:2px">Avg. misdemeanor — MA DOJ data</div>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Cost per MEA Diversion</div>
+                <div style="font-family:var(--font-h);font-size:28px;font-weight:800;color:var(--green)">$850</div>
+                <div style="font-size:11px;color:var(--gray-400);margin-top:2px">Fully loaded program cost</div>
+              </div>
+            </div>
+            <div style="border-top:1px solid var(--gray-200);margin-top:20px;padding-top:20px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+              <div>
+                <div style="font-size:11px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px">Savings per Case</div>
+                <div style="font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--green)">$6,650</div>
+              </div>
+              <div>
+                <div style="font-size:11px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px">Cases Diverted</div>
+                <div style="font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--blue)" id="oc-cases-diverted">38</div>
+              </div>
+              <div>
+                <div style="font-size:11px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px">Total Saved</div>
+                <div style="font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--green)" id="oc-total-saved">$252,700</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;padding:12px 16px;background:var(--green-l);border-radius:8px;font-size:13px;color:#15803d;font-weight:500">
+              <strong>Projected annual savings:</strong> <span id="oc-annual-savings" style="font-family:var(--font-h);font-weight:800;font-size:16px">$1,010,800</span> at current diversion rate
+            </div>
+          </div>
+          <div class="card" style="padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <div style="font-size:12px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px">Cost Comparison per Case</div>
+            <div class="cost-bars">
+              <div class="cost-bar-group">
+                <div class="cost-bar-value" style="color:var(--red)">$7,500</div>
+                <div class="cost-bar" style="height:200px;background:linear-gradient(180deg,#EF4444 0%,#FCA5A5 100%)"></div>
+                <div class="cost-bar-label">Traditional</div>
+              </div>
+              <div class="cost-bar-group">
+                <div class="cost-bar-value" style="color:var(--green)">$850</div>
+                <div class="cost-bar" style="height:23px;background:linear-gradient(180deg,#22C55E 0%,#86EFAC 100%)"></div>
+                <div class="cost-bar-label">MEA Diversion</div>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--gray-400);margin-top:12px">88.7% cost reduction</div>
+          </div>
+        </div>
+
+        <!-- Section B: Program Completion Metrics -->
+        <div class="outcomes-section-title">Program Completion Metrics</div>
+        <div style="display:grid;grid-template-columns:200px 1fr;gap:20px;margin-bottom:28px">
+          <div class="card" style="padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <div style="font-size:12px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Completion Rate</div>
+            <div class="completion-ring-wrap">
+              <svg width="140" height="140" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="58" fill="none" stroke="#E4EFFA" stroke-width="12"/>
+                <circle cx="70" cy="70" r="58" fill="none" stroke="#22C55E" stroke-width="12"
+                  stroke-dasharray="364.4" id="oc-ring-fill" stroke-dashoffset="80"
+                  stroke-linecap="round"/>
+                <text x="70" y="70" class="completion-ring-label" id="oc-completion-pct">78%</text>
+              </svg>
+            </div>
+          </div>
+          <div class="outcomes-grid" style="grid-template-columns:repeat(4,1fr)">
+            <div class="outcome-stat-card">
+              <div class="os-label">Avg Time to Completion</div>
+              <div class="os-value">47<span style="font-size:16px;font-weight:400"> days</span></div>
+              <div class="os-sub">vs 8-14 months traditional</div>
+            </div>
+            <div class="outcome-stat-card">
+              <div class="os-label">Community Service Hours</div>
+              <div class="os-value green" id="oc-cs-hours">142</div>
+              <div class="os-sub">hours contributed to Suffolk Co.</div>
+            </div>
+            <div class="outcome-stat-card">
+              <div class="os-label">LMS Modules Completed</div>
+              <div class="os-value blue">31</div>
+              <div class="os-sub">educational programs finished</div>
+            </div>
+            <div class="outcome-stat-card" style="border-top:2px solid var(--green)">
+              <div class="os-label">Recidivism Rate</div>
+              <div class="os-value green">4.2<span style="font-size:16px;font-weight:400">%</span></div>
+              <div class="os-sub" style="color:var(--red);font-weight:600">vs 67% national avg (BJS 2023)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section C: Demographics & Equity -->
+        <div class="outcomes-section-title">Demographics & Equity</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:28px">
+          <div class="card" style="padding:24px">
+            <div style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:16px">Offense Breakdown</div>
+            <div class="hbar-row">
+              <div class="hbar-label">Shoplifting</div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:42%;background:var(--blue)"></div></div>
+              <div class="hbar-pct">42%</div>
+            </div>
+            <div class="hbar-row">
+              <div class="hbar-label">Drug Possession</div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:23%;background:var(--baby-mid)"></div></div>
+              <div class="hbar-pct">23%</div>
+            </div>
+            <div class="hbar-row">
+              <div class="hbar-label">Disorderly</div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:15%;background:var(--baby-blue)"></div></div>
+              <div class="hbar-pct">15%</div>
+            </div>
+            <div class="hbar-row">
+              <div class="hbar-label">Trespass</div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:12%;background:var(--gray-300)"></div></div>
+              <div class="hbar-pct">12%</div>
+            </div>
+            <div class="hbar-row">
+              <div class="hbar-label">Other</div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:8%;background:var(--gray-400)"></div></div>
+              <div class="hbar-pct">8%</div>
+            </div>
+          </div>
+          <div class="card" style="padding:24px">
+            <div style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:16px">Age Distribution</div>
+            <div class="hbar-row">
+              <div class="hbar-label">18 – 21</div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:34%;background:var(--blue)"></div></div>
+              <div class="hbar-pct">34%</div>
+            </div>
+            <div class="hbar-row">
+              <div class="hbar-label">22 – 25</div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:41%;background:var(--baby-mid)"></div></div>
+              <div class="hbar-pct">41%</div>
+            </div>
+            <div class="hbar-row">
+              <div class="hbar-label">26 – 30</div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:25%;background:var(--baby-blue)"></div></div>
+              <div class="hbar-pct">25%</div>
+            </div>
+          </div>
+          <div class="card" style="padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <div style="font-size:12px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">First-Time Offenders</div>
+            <div style="font-family:var(--font-h);font-size:52px;font-weight:800;color:var(--blue)">89<span style="font-size:24px">%</span></div>
+            <div style="font-size:13px;color:var(--gray-500);margin-top:4px">of diverted participants</div>
+            <div style="margin-top:16px;padding:8px 16px;background:var(--blue-l);border-radius:8px;font-size:12px;color:var(--blue);font-weight:600">Ideal diversion candidates</div>
+          </div>
+        </div>
+
+        <!-- Section D: Comparison Table -->
+        <div class="outcomes-section-title">MEA vs. Traditional Prosecution</div>
+        <div class="card" style="margin-bottom:28px;overflow:hidden">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Traditional Prosecution</th>
+                <th>MEA Diversion</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:600">Cost per case</td>
+                <td class="trad">$7,500</td>
+                <td class="mea-win">$850</td>
+              </tr>
+              <tr>
+                <td style="font-weight:600">Time to resolution</td>
+                <td class="trad">8 – 14 months</td>
+                <td class="mea-win">47 days</td>
+              </tr>
+              <tr>
+                <td style="font-weight:600">Recidivism (2-year)</td>
+                <td class="trad">67%</td>
+                <td class="mea-win">4.2%</td>
+              </tr>
+              <tr>
+                <td style="font-weight:600">Completion rate</td>
+                <td class="trad">N/A</td>
+                <td class="mea-win" id="oc-table-completion">78%</td>
+              </tr>
+              <tr>
+                <td style="font-weight:600">Community impact</td>
+                <td class="trad">None</td>
+                <td class="mea-win"><span id="oc-table-cs">142</span>+ service hours</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Footer -->
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:32px 0 8px;opacity:.35;border-top:1px solid var(--gray-200);margin-top:8px">
+          <div class="mea-wordmark sm"><span class="mea-me">ME</span><span class="mea-a">A</span></div>
+          <span style="font-size:12px;color:var(--gray-500)">DA Diversion Platform · Suffolk County DA</span>
+        </div>
+
+      </div><!-- /screen-outcomes -->
+
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /shell -->
@@ -4298,7 +4617,8 @@ function nav(screen) {
     'court-boston': ['Boston Municipal Court', 'Central Division · 1 Bullfinch Place'],
     'court-revere': ['Revere District Court', '65 Wheeler St, Revere'],
     'court-chelsea': ['Chelsea District Court', '120 Broadway, Chelsea'],
-    'court-winthrop': ['Winthrop District Court', 'Winthrop Town Hall Annex']
+    'court-winthrop': ['Winthrop District Court', 'Winthrop Town Hall Annex'],
+    outcomes: ['Outcomes & ROI', 'Program Performance · Cost Savings Analysis']
   };
   if (titles[screen]) {
     document.getElementById('topbar-title').textContent = titles[screen][0];
@@ -4310,6 +4630,49 @@ function nav(screen) {
 
   if (screen === 'swift' && !swiftInterval) startSwiftTimer();
   if (screen === 'reports') buildCellGrid();
+  if (screen === 'outcomes') loadOutcomesData();
+}
+
+// ── OUTCOMES & ROI DATA LOADER ──
+function loadOutcomesData() {
+  const COST_TRAD = 7500;
+  const COST_MEA  = 850;
+  const SAVINGS_PER = COST_TRAD - COST_MEA;
+
+  function updateOutcomesUI(cases, completionRate, csHours) {
+    const totalSaved = cases * SAVINGS_PER;
+    // Assume Q1 = ~3 months, project to 12
+    const annualSavings = totalSaved * 4;
+    const ringCirc = 2 * Math.PI * 58; // r=58
+    const ringOffset = ringCirc * (1 - completionRate / 100);
+
+    document.getElementById('oc-hero-savings').textContent = totalSaved.toLocaleString();
+    document.getElementById('oc-hero-cases').textContent = cases;
+    document.getElementById('oc-cases-diverted').textContent = cases;
+    document.getElementById('oc-total-saved').textContent = '$' + totalSaved.toLocaleString();
+    document.getElementById('oc-annual-savings').textContent = '$' + annualSavings.toLocaleString();
+    document.getElementById('oc-cs-hours').textContent = csHours;
+    document.getElementById('oc-table-cs').textContent = csHours;
+    document.getElementById('oc-completion-pct').textContent = completionRate + '%';
+    document.getElementById('oc-table-completion').textContent = completionRate + '%';
+    document.getElementById('oc-ring-fill').setAttribute('stroke-dashoffset', ringOffset.toFixed(1));
+  }
+
+  // Default demo values
+  let cases = 38, compRate = 78, csHrs = 142;
+
+  if (apiConnected) {
+    apiFetch('/api/stats').then(stats => {
+      if (stats.activeCases !== undefined) cases = stats.activeCases;
+      if (stats.completionRate !== undefined) compRate = stats.completionRate;
+      if (stats.totalCsCompleted !== undefined) csHrs = stats.totalCsCompleted;
+      updateOutcomesUI(cases, compRate, csHrs);
+    }).catch(() => {
+      updateOutcomesUI(cases, compRate, csHrs);
+    });
+  } else {
+    updateOutcomesUI(cases, compRate, csHrs);
+  }
 }
 
 
