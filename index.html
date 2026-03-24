@@ -886,6 +886,8 @@ function meaGateCheck(){
     var gate=document.getElementById('mea-gate');
     gate.style.opacity='0';
     setTimeout(function(){ gate.style.display='none'; },400);
+    // Auto-login to backend API
+    if (typeof apiLogin === 'function') { setTimeout(apiLogin, 500); }
   } else {
     // Show error
     var err=document.getElementById('gate-error');
@@ -905,6 +907,253 @@ document.getElementById('gate-pw').addEventListener('keydown',function(e){
   if(e.key==='Enter') meaGateCheck();
 });
 </script>
+
+<!-- ══════════════════════ API INTEGRATION ══════════════════════ -->
+<script>
+const API_BASE = 'http://localhost:3001';
+let authToken = null;
+let apiConnected = false;
+let _apiCitationIds = new Set(); // track which API citations we already added
+let _lastOpenedDefId = null; // track which defendant is currently open in modal
+
+function apiLogin() {
+  fetch(API_BASE + '/api/auth/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({email: 'blazo@suffolkda.gov', password: '4321'})
+  }).then(r => r.json()).then(d => {
+    if (d.token) {
+      authToken = d.token;
+      apiConnected = true;
+      showLiveIndicator(true);
+      loadLiveData();
+      // Auto-refresh every 30 seconds
+      setInterval(() => { if (apiConnected) loadLiveData(); }, 30000);
+    }
+  }).catch(() => { apiConnected = false; showLiveIndicator(false); });
+}
+
+function apiFetch(path) {
+  return fetch(API_BASE + path, {
+    headers: { 'Authorization': 'Bearer ' + authToken }
+  }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+}
+
+function apiPatch(path, body) {
+  fetch(API_BASE + path, {
+    method: 'PATCH',
+    headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).catch(() => {}); // fire and forget
+}
+
+function showLiveIndicator(connected) {
+  let el = document.getElementById('mea-live-indicator');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'mea-live-indicator';
+    el.style.cssText = 'display:flex;align-items:center;gap:5px;padding:8px 20px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:rgba(255,255,255,.5);transition:opacity .3s;';
+    const sidebar = document.querySelector('.sidebar-footer');
+    if (sidebar) sidebar.parentNode.insertBefore(el, sidebar);
+  }
+  if (connected) {
+    el.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:#22C55E;display:inline-block;animation:mea-pulse 2s infinite;"></span> <span style="color:#22C55E;">Live</span> <span style="color:rgba(255,255,255,.35);font-weight:400;font-size:10px;">· API Connected</span>';
+    el.style.opacity = '1';
+  } else {
+    el.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:#EF4444;display:inline-block;"></span> <span style="color:rgba(255,255,255,.4);">Offline</span>';
+    el.style.opacity = '0.6';
+  }
+}
+
+function mapChargeTag(charge) {
+  if (!charge) return 'encounter';
+  const c = charge.toLowerCase();
+  if (c.includes('drug') || c.includes('possess') || c.includes('marijuana') || c.includes('cannabis')) return 'drug';
+  if (c.includes('shoplift') || c.includes('larceny') || c.includes('theft') || c.includes('steal')) return 'theft';
+  if (c.includes('vandal') || c.includes('property') || c.includes('graffiti') || c.includes('trespass')) return 'property';
+  if (c.includes('disorderly') || c.includes('a&b') || c.includes('assault') || c.includes('conduct')) return 'conduct';
+  return 'encounter';
+}
+
+function mapStatusClass(status) {
+  if (!status) return 'badge-pending';
+  const s = status.toLowerCase();
+  if (s === 'pending' || s === 'cited') return 'badge-pending';
+  if (s === 'approved' || s === 'active' || s === 'completed') return 'badge-approved';
+  if (s === 'denied' || s === 'rejected') return 'badge-denied';
+  if (s === 'in_review' || s === 'review') return 'badge-review';
+  if (s === 'swift') return 'badge-swift';
+  return 'badge-pending';
+}
+
+function formatStatus(status) {
+  if (!status) return 'Pending';
+  return status.charAt(0).toUpperCase() + status.slice(1).replace(/_/g, ' ');
+}
+
+function loadLiveData() {
+  if (!authToken) return;
+
+  // Fetch stats
+  apiFetch('/api/stats').then(stats => {
+    // Update home screen stat cards with merged data if desired
+    // We show API total in the pending card as additional context
+    const pendingCards = document.querySelectorAll('#screen-home .stat-card');
+    if (pendingCards.length >= 1 && stats.pending !== undefined) {
+      const subEl = pendingCards[0].querySelector('.stat-sub');
+      if (subEl) {
+        const apiCount = stats.pending || 0;
+        if (apiCount > 0) {
+          subEl.innerHTML = 'Awaiting your decision <span style="color:var(--blue);font-weight:600;">(+' + apiCount + ' from field)</span>';
+        }
+      }
+    }
+  }).catch(() => {});
+
+  // Fetch citations
+  apiFetch('/api/citations').then(data => {
+    const citations = data.citations || [];
+    let newCount = 0;
+
+    citations.forEach(cit => {
+      const defId = 'API-' + cit.id;
+      if (DEFENDANTS[defId]) return; // already added
+
+      // Build initials from name
+      const nameParts = (cit.defendantName || cit.defendant_name || 'Unknown').split(' ');
+      const initials = nameParts.map(p => p.charAt(0).toUpperCase()).join('').substring(0, 2);
+      const name = cit.defendantName || cit.defendant_name || 'Unknown';
+      const dob = cit.defendantDob || cit.defendant_dob || cit.dob || 'N/A';
+      const age = cit.defendantAge || cit.defendant_age || cit.age || '—';
+      const charge = cit.charge || cit.offense || 'Citation';
+      const statute = cit.statute || cit.statuteCode || cit.statute_code || '—';
+      const arrestDate = cit.citationDate || cit.citation_date || cit.arrestDate || cit.arrest_date || cit.createdAt || 'Today';
+      const officer = cit.officerName || cit.officer_name || cit.officer || 'Field Officer';
+      const priors = cit.priors || 0;
+      const status = cit.status || 'pending';
+      const court = cit.court || 'Suffolk County';
+      const incident = cit.narrative || cit.incident || cit.notes || 'Submitted via MEA Police App.';
+      const entryType = cit.entryType || cit.entry_type || 'Field / Pre-Arrest';
+
+      // Format the date nicely
+      let formattedDate = arrestDate;
+      try {
+        const d = new Date(arrestDate);
+        if (!isNaN(d)) {
+          formattedDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+      } catch(e) {}
+
+      // Create DEFENDANTS entry matching exact structure
+      DEFENDANTS[defId] = {
+        id: defId,
+        _apiId: cit.id, // store real API id for PATCH
+        initials: initials,
+        name: name,
+        age: age,
+        dob: dob,
+        court: court,
+        charge: charge,
+        statute: statute,
+        arrestDate: formattedDate,
+        officer: officer,
+        entryType: entryType,
+        priors: priors,
+        priorsNote: priors === 0 ? 'No prior arrests' : priors + ' prior charge' + (priors === 1 ? '' : 's'),
+        incident: incident,
+        window: '✓ New',
+        status: formatStatus(status),
+        statusClass: mapStatusClass(status),
+        program: 'Pending Assignment',
+        eligible: priors <= 3,
+        _fromApi: true,
+        history: [
+          { date: formattedDate, event: 'Citation submitted via MEA Police App', badge: 'Cited', badgeClass: 'badge-pending', by: officer }
+        ],
+        notes: [
+          { author: 'MEA System', date: formattedDate, text: 'Auto-imported from Police App field citation. ' + incident }
+        ]
+      };
+
+      _apiCitationIds.add(defId);
+      newCount++;
+    });
+
+    if (newCount > 0) {
+      injectApiRows();
+    }
+  }).catch(() => {});
+}
+
+function injectApiRows() {
+  // Inject into ALL referral queue tables on the home screen
+  const homeQueueTbody = document.querySelector('#screen-home .queue-table tbody');
+  if (homeQueueTbody) {
+    _apiCitationIds.forEach(defId => {
+      if (homeQueueTbody.querySelector('[data-api-id="' + defId + '"]')) return;
+      const d = DEFENDANTS[defId];
+      if (!d) return;
+      const tr = document.createElement('tr');
+      tr.style.cursor = 'pointer';
+      tr.setAttribute('data-api-id', defId);
+      tr.style.background = '#F0FFF4'; // subtle green tint for new API rows
+      tr.onclick = function() { openCase(defId); };
+      tr.innerHTML =
+        '<td><div class="def-cell"><div class="def-avatar" style="background:#DCFCE7;color:#166534">' + d.initials + '</div><div><div class="def-name">' + d.name + ' <span style="font-size:9px;background:#22C55E;color:#fff;padding:1px 5px;border-radius:3px;font-weight:700;vertical-align:middle;margin-left:4px;">NEW</span></div><div class="def-dob">Age ' + d.age + ' · DOB ' + d.dob + '</div></div></div></td>' +
+        '<td><span class="charge-tag ' + mapChargeTag(d.charge) + '">' + d.charge + '</span></td>' +
+        '<td>' + d.priors + '</td>' +
+        '<td><span class="sla-indicator sla-ok">' + d.window + '</span></td>' +
+        '<td><span class="badge ' + d.statusClass + '">' + d.status + '</span></td>';
+      // Prepend (newest first)
+      homeQueueTbody.insertBefore(tr, homeQueueTbody.firstChild);
+    });
+  }
+
+  // Also inject into the full queue screen table
+  const queueTbody = document.querySelector('#screen-queue .queue-table tbody');
+  if (queueTbody) {
+    _apiCitationIds.forEach(defId => {
+      if (queueTbody.querySelector('[data-api-id="' + defId + '"]')) return;
+      const d = DEFENDANTS[defId];
+      if (!d) return;
+      const tr = document.createElement('tr');
+      tr.style.cursor = 'pointer';
+      tr.setAttribute('data-api-id', defId);
+      tr.style.background = '#F0FFF4';
+      tr.onclick = function() { openCase(defId); };
+      tr.innerHTML =
+        '<td onclick="event.stopPropagation()"><input type="checkbox"></td>' +
+        '<td><div class="def-cell"><div class="def-avatar" style="background:#DCFCE7;color:#166534">' + d.initials + '</div><div><div class="def-name">' + d.name + ' <span style="font-size:9px;background:#22C55E;color:#fff;padding:1px 5px;border-radius:3px;font-weight:700;vertical-align:middle;margin-left:4px;">NEW</span></div><div class="def-dob">DOB ' + d.dob + '</div></div></div></td>' +
+        '<td style="font-size:12px;color:var(--gray-500);font-family:monospace">' + d.id + '</td>' +
+        '<td><span class="charge-tag ' + mapChargeTag(d.charge) + '">' + d.charge + '</span></td>' +
+        '<td>' + d.age + '</td>' +
+        '<td>' + d.priors + '</td>' +
+        '<td style="font-size:12px;color:var(--gray-500)">' + d.officer + '</td>' +
+        '<td><span class="sla-indicator sla-ok">' + d.window + '</span></td>' +
+        '<td><span style="font-size:11px;color:var(--blue);font-weight:600">MEA App</span></td>' +
+        '<td><span class="badge ' + d.statusClass + '">' + d.status + '</span></td>' +
+        '<td></td>';
+      // Prepend (newest first)
+      queueTbody.insertBefore(tr, queueTbody.firstChild);
+    });
+  }
+
+  // Update queue badge count
+  const badge = document.getElementById('queue-badge');
+  if (badge) {
+    const base = 8; // original hardcoded count
+    badge.textContent = base + _apiCitationIds.size;
+  }
+}
+</script>
+
+<style>
+@keyframes mea-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+</style>
+
 <style>
 @keyframes gate-shake {
   0%,100%{transform:translateX(0)}
@@ -4668,6 +4917,7 @@ const DEFENDANTS = {
 };
 function openCase(id) {
   const def = DEFENDANTS[id];
+  _lastOpenedDefId = id; // track for API PATCH on approve/deny
   if (def) {
     openDefModal(def);
   } else {
@@ -5587,11 +5837,23 @@ function submitApproval() {
   } else {
     showToast('✓ Diversion approved — Coach notification sent via SMS');
   }
+  // PATCH API citation status if this was an API case (fire and forget)
+  if (apiConnected && _lastOpenedDefId && DEFENDANTS[_lastOpenedDefId] && DEFENDANTS[_lastOpenedDefId]._apiId) {
+    apiPatch('/api/citations/' + DEFENDANTS[_lastOpenedDefId]._apiId, { status: 'approved' });
+    DEFENDANTS[_lastOpenedDefId].status = 'Approved';
+    DEFENDANTS[_lastOpenedDefId].statusClass = 'badge-approved';
+  }
 }
 
 function submitDenial() {
   closeModals();
   showToast('✗ Case denied — returned to prosecution track');
+  // PATCH API citation status if this was an API case (fire and forget)
+  if (apiConnected && _lastOpenedDefId && DEFENDANTS[_lastOpenedDefId] && DEFENDANTS[_lastOpenedDefId]._apiId) {
+    apiPatch('/api/citations/' + DEFENDANTS[_lastOpenedDefId]._apiId, { status: 'denied' });
+    DEFENDANTS[_lastOpenedDefId].status = 'Denied';
+    DEFENDANTS[_lastOpenedDefId].statusClass = 'badge-denied';
+  }
 }
 
 // ── FEATURE #5: HELP ASSISTANT ──
