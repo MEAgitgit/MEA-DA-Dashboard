@@ -1123,10 +1123,14 @@ function loadLiveData() {
       const defId = 'API-' + cit.id;
       if (DEFENDANTS[defId]) return; // already added
 
+      // Skip citations with missing/empty participant data
+      const rawName = cit.defendantName || cit.defendant_name || cit.participant_name || '';
+      if (!rawName || rawName.trim() === '' || rawName.trim().toLowerCase() === 'unknown') return;
+
       // Build initials from name
-      const nameParts = (cit.defendantName || cit.defendant_name || 'Unknown').split(' ');
+      const nameParts = rawName.split(' ');
       const initials = nameParts.map(p => p.charAt(0).toUpperCase()).join('').substring(0, 2);
-      const name = cit.defendantName || cit.defendant_name || 'Unknown';
+      const name = rawName.trim();
       const dob = cit.defendantDob || cit.defendant_dob || cit.dob || 'N/A';
       const age = cit.defendantAge || cit.defendant_age || cit.age || '—';
       const charge = cit.charge || cit.offense || 'Citation';
