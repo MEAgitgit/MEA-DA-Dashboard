@@ -1175,6 +1175,7 @@ function loadLiveData() {
         program: 'Pending Assignment',
         eligible: priors <= 3,
         _fromApi: true,
+        _itemsJson: cit.items_json || null,
         history: [
           { date: formattedDate, event: 'Citation submitted via MEA Police App', badge: 'Cited', badgeClass: 'badge-pending', by: officer }
         ],
@@ -5445,7 +5446,35 @@ function openDefModal(d) {
   // Evidence photos
   const photoBox = m.querySelector('#dm-evidence-photos');
   if (photoBox) {
-    // Use defendant-specific item photos if available (shoplifting), else scene photo
+    // Use real item photos from API if available, else fall back to demo defendant photos
+    let apiItems = null;
+    if (d._itemsJson) {
+      try {
+        apiItems = typeof d._itemsJson === 'string' ? JSON.parse(d._itemsJson) : d._itemsJson;
+      } catch(e) {}
+    }
+    if (apiItems && apiItems.length > 0 && apiItems.some(it => it.photoData)) {
+      photoBox.innerHTML = apiItems.filter(it => it.photoData).map(it => `
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;width:120px;flex-shrink:0">
+          <img src="${it.photoData}" style="width:120px;height:100px;object-fit:cover;display:block">
+          <div style="padding:6px 8px">
+            <div style="font-size:11px;font-weight:600;color:var(--gray-700)">${it.name}</div>
+            <div style="font-size:11px;color:#dc2626;font-weight:700">$${(it.unitPrice || 0).toFixed(2)}${it.qty > 1 ? ' x' + it.qty : ''}</div>
+            <div style="font-size:9px;color:var(--gray-400);margin-top:1px">Recovered \u00b7 Tagged</div>
+          </div>
+        </div>`).join('');
+    } else if (apiItems && apiItems.length > 0) {
+      // Items from API but no photos — show text cards
+      photoBox.innerHTML = apiItems.map(it => `
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;width:120px;flex-shrink:0;text-align:center">
+          <div style="height:100px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;font-size:36px">📦</div>
+          <div style="padding:6px 8px">
+            <div style="font-size:11px;font-weight:600;color:var(--gray-700)">${it.name}</div>
+            <div style="font-size:11px;color:#dc2626;font-weight:700">$${(it.unitPrice || 0).toFixed(2)}${it.qty > 1 ? ' x' + it.qty : ''}</div>
+            <div style="font-size:9px;color:var(--gray-400);margin-top:1px">Recovered</div>
+          </div>
+        </div>`).join('');
+    } else {
     const defPhotos = DEFENDANT_PHOTOS[d.id];
     if (defPhotos) {
       photoBox.innerHTML = defPhotos.map(p => `
@@ -5501,10 +5530,8 @@ function openDefModal(d) {
           <div style="font-size:9px;color:var(--gray-400)">Pending / Filed</div>
         </div>
       </div>`;
-  }
-
-  // History
     }
+  }
 
   // History
   const histBody = m.querySelector('#dm-history-body');
